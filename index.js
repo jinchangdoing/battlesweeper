@@ -68,7 +68,11 @@
                     
        }
        firstflag=false;
-       
+       //扣除标记数
+        if(e.target.innerText){
+                    var a = parseInt(e.target.innerText);  
+                    gameInfo.mineFlaged[a-1]--;
+        } 
        
        // 点击到空白时 点击周围八格
        if(mine.type === 'space' && mine.number === 0) {
@@ -91,7 +95,7 @@
        }
        // 点击到雷时 扣除血量
        if(mine.type === 'mine' && mine.number > getPlayerLevel()) {
-            
+                              
             playerInfo.hp -= mine.number * (mine.number - getPlayerLevel());
             $box.style.transform='rotate(3deg)'
             setTimeout(function(){
@@ -117,6 +121,8 @@
 
        // 点击到雷时 增加经验,扣除雷数
        if(mine.type === 'mine') {
+            
+                    
             gameInfo.mineNum[mine.number-1]--;
             playerInfo.exp += gameInfo.mineExp[mine.number-1];
        }
