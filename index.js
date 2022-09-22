@@ -2,7 +2,6 @@
 
 
 (function(){
-    var data;
     var difficulty = 'normal';
     var time=0;
     var inter=0;
@@ -416,17 +415,7 @@
             return $button;
         }
     }
-    
-    var url=window.location.host.indexOf('localhost')!==-1?'data.local.json':'data.json';    
-    fetch(url).then(function(resp){
-    
-        resp.json().then(function(d){
-            data=d;
-            init('normal');
-        });
-        
-    
-    });
+    init('normal');
     window.oncontextmenu=function(e) {
         return false;
     }
