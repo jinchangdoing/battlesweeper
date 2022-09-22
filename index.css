@@ -1,0 +1,186 @@
+html, body, #app{
+    position: relative;
+    margin: 0;
+    height: 100%;
+    box-sizing: border-box;
+}
+#app {
+
+    padding-top: 100px;
+}
+.blocks {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.block {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 25px;
+    user-select: none;
+    border-right: 1px solid #a4b0ff;
+    border-bottom: 1px solid #a4b0ff;
+    box-sizing: border-box;
+}
+
+.blocks:nth-child(1) > .block {
+    border-top: 1px solid #a4b0ff;
+}
+.block:nth-child(1) {
+    border-left: 1px solid #a4b0ff;
+}
+.block-space.num-1 {
+    color: rgb(8, 153, 235);
+}
+.block-space.num-2 {
+    color: rgb(255, 45, 178);
+}
+.block-space.num-3 {
+    color: rgb(109, 224, 176);
+}
+.block-space.num-4 {
+    color: rgb(8, 153, 235);
+}
+.block-space.num-5 {
+    color: rgb(255, 167, 45);
+}
+.block-space.num-6 {
+    color: rgb(49, 140, 102);
+}
+.block-space.num-7 {
+    color: rgb(168, 55, 237);
+}
+.block-space.num-8 {
+    color: rgb(15, 254, 154);
+}
+.block-mine {
+    background: red;
+}
+
+.block-mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #94a0fe;
+    cursor: pointer;
+    color:#fff;
+}
+
+.main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    transition:0.05s;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    transition:0.05s;
+}
+
+.message {
+    position: fixed;
+    padding: 10px;
+    right: 20px;
+    transition: 0.5s;
+
+    background: #fff;
+    box-shadow: 0 0 10px #efefef;
+    border-radius: 4px;
+}
+
+.actions {
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.actions > button {
+    padding: 5px 10px;
+    color: #fff;
+    background: #6980ae;
+    border: none;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.actions > button:hover {
+    background: #b4c0ff;
+}
+.actions > button:first-child {
+    border-radius: 8px 0 0 8px;
+}
+.actions > button:last-child {
+    border-radius: 0 8px 8px 0 ;
+}
+.toolbar-wrapper{
+    display:none;
+    position: absolute;
+    width:100%;
+    height:100%;
+    left: 0;
+    top: 0;
+}
+.toolbar {  
+    display:flex;
+    flex-wrap:wrap;
+    position: fixed;
+    width:200px;
+    background: #fff;
+    box-shadow: 0 0 5px #999999;
+    border-radius: 4px;
+    padding:8px;
+    left: 0;
+    top: 0;
+}
+.toolbar .flag{
+    width:40px;
+    height:40px;
+    margin:0;
+    font-size:20px;
+    border:1px solid #ffffff;
+    box-sizing:border-box; 
+    cursor:pointer;
+    transition: background 0.1s,color 0.1s;
+       
+}
+.toolbar .flag:hover{
+    background:#94a0fe;
+    color:#ffffff;
+
+}
+.info th{
+    background:red;
+    color:#ffffff;
+
+}
+.info th,.info td{
+    width:20px;
+    height:20px;
+}
+.info th:first-child,.info td:first-child{
+    width:80px;
+    height:20px;
+}
+.info tr{
+    height:20px;
+}
+.info {
+
+    
+    flex-direction: column;
+    text-align:center;
+    align-items: center;
+    display:flex;
+    width:400px;
+    left: calc(50% - 200px);
+    bottom: 100px;
+}
