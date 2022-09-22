@@ -2,9 +2,10 @@
 
 
 (function(){
-    var data = getDataInfo();
+    var data;
     var difficulty = 'normal';
     var time=0;
+    var inter=0;
     var playerInfo = {
         hp: 0,
         exp: 0,
@@ -15,6 +16,7 @@
         height: 0,
         mineNum: [],
         mineExp: [],
+        mineFlaged:[],
     };
     var firstflag=true;
     var mineList = [];
@@ -148,6 +150,11 @@
         message('你输了 - ^ -');
         // 取消点击事件
         var doms = document.querySelectorAll(`.block > .block-mask`);
+        // 结束计时器
+        if(inter)
+            clearInterval(inter);
+        
+        
         _.forEach(doms, function(d, i){
             d.style.pointerEvents = 'none';
         })
@@ -185,6 +192,18 @@
                     <td>${gameInfo.mineNum[6]}</td>
                     <td>${gameInfo.mineNum[7]}</td>
                     <td>${gameInfo.mineNum[8]}</td>   
+                </tr>
+                <tr>
+                    <td>标记雷数</td>
+                    <td>${gameInfo.mineFlaged[0]}</td>
+                    <td>${gameInfo.mineFlaged[1]}</td>
+                    <td>${gameInfo.mineFlaged[2]}</td>
+                    <td>${gameInfo.mineFlaged[3]}</td>
+                    <td>${gameInfo.mineFlaged[4]}</td>
+                    <td>${gameInfo.mineFlaged[5]}</td>
+                    <td>${gameInfo.mineFlaged[6]}</td>
+                    <td>${gameInfo.mineFlaged[7]}</td>
+                    <td>${gameInfo.mineFlaged[8]}</td>   
                 </tr>    
             </table>         
             
@@ -305,18 +324,38 @@
                 <button class="flag setflag" data="9">9</button>      
         `   
         
-       
+        // 清除雷等级
+        
         var $clearflag = document.querySelector('.clearflag');
         $clearflag.addEventListener('click', function(e) {
-            if(targetMask)
-                targetMask.innerText='';
-     
+            if(!targetMask)
+                return
+            if(targetMask.innerText){
+                var a = parseInt(targetMask.innerText);  
+                gameInfo.mineFlaged[a-1]--;
+                updateInfo()
+            }
+            targetMask.innerText='';
+            
+                 
         });
+        
+        // 标记雷等级
         var $setflags = document.querySelectorAll(`.setflag`);
         _.forEach($setflags,function(s,i){
-            s.addEventListener('click', function(e) {
-                if(targetMask)
-                targetMask.innerText=e.target.attributes.data.value;
+            s.addEventListener('click', function(e) {           
+                if(!targetMask)
+                    return
+                if(targetMask.innerText){
+                    var a = parseInt(targetMask.innerText);  
+                    gameInfo.mineFlaged[a-1]--;
+                }  
+                var count = parseInt(e.target.attributes.data.value);
+                targetMask.innerText=count; 
+                             
+                gameInfo.mineFlaged[count-1]++;
+                updateInfo()             
+                
             });
     })
         
@@ -327,7 +366,7 @@
         // 展示数据
         updateInfo();
     }
-    var inter=0;
+    
     function init(diff) {
         difficulty = diff;
         $actions.innerHTML = '';
@@ -378,7 +417,16 @@
         }
     }
     
-    init('normal');
+    var url=window.location.host.indexOf('localhost')!==-1?'data.local.json':'data.json';    
+    fetch(url).then(function(resp){
+    
+        resp.json().then(function(d){
+            data=d;
+            init('normal');
+        });
+        
+    
+    });
     window.oncontextmenu=function(e) {
         return false;
     }
