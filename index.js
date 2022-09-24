@@ -180,10 +180,18 @@
     function updateInfo() {
            
         $info.innerHTML = `
-            <table>
+            <table cellspacing=0>
                 <tr>
                     <th>雷等级</th>
-                    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th>    
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>    
                 </tr>
                 <tr>
                     <td>剩余雷数</td>
@@ -208,16 +216,23 @@
                     <td>${gameInfo.mineFlaged[6]}</td>
                     <td>${gameInfo.mineFlaged[7]}</td>
                     <td>${gameInfo.mineFlaged[8]}</td>   
+                </tr>
+                <tr>
+                    <th>难度</th> 
+                    <th colspan="2">HP</th> 
+                    <th colspan="2">等级</th> 
+                    <th colspan="3">升级经验</th> 
+                    <th colspan="2">TIME</th> 
                 </tr>    
-            </table>         
-            
-            <p>
-                <span>难度:${difficulty}</span>
-                <span>hp:${playerInfo.hp}</span>
-                <span>升级经验:${getNextLevelExp()}</span>
-                <span>等级:${getPlayerLevel()}</span>
-                <span class="time">TIME: ${time}</span>
-            </p>`;
+                <tr>
+                    <td>${difficulty}</td>
+                    <td colspan="2">${playerInfo.hp}</td>
+                    <td colspan="2">${getPlayerLevel()}</td>
+                    <td colspan="3">${getNextLevelExp()}</td>
+                    <td colspan="2" class="time">${time}</td>
+                </tr>    
+            </table>
+            `;
     }
 
     // 数据初始化
@@ -255,15 +270,13 @@
             if(m.type !== 'mine') {
                 return;
             }
-            for(var n = 0;n < 9; n++) {
+            for(var n = 0; n < 9; n++) {
                 var x = parseInt(n / 3) - 1;
                 var y = parseInt(n % 3) - 1;
-                
-                
-                if(i%height === 0 && x=== -1){
+                if(i % height === 0 && x === -1){
                    continue
                 }
-                if(i%height===(height-1)&&x===1){
+                if(i % height===(height-1) && x=== 1){
                    continue
                 }
                 
@@ -369,12 +382,7 @@
                 gameInfo.mineFlaged[flagNum - 1]++;
                 updateInfo();        
             });
-    })
-        
-        
-        
-         
-        
+        })
         // 展示数据
         updateInfo();
     }
@@ -391,14 +399,14 @@
         $actions.appendChild(createButtonZoom('down', '缩小'));
         initData(diff);
         initView();
-        time=0;
+        time = 0;
         if(inter)
             clearInterval(inter);
-        inter=setInterval(function(){
+        inter = setInterval(function() {
             time ++;
             var $time = document.querySelector('.time');
             if($time)
-                $time.innerText='TIME: '+time;
+                $time.innerText= time;
         },1000)
 
         message(`游戏开始, 等级${diff}`);
@@ -427,6 +435,7 @@
         }
     }
     init('normal');
+    // 禁用默认右键
     window.oncontextmenu = function(e) {
         return false;
     }
@@ -467,10 +476,11 @@
         $main.style.top = `${my - cy + e.clientY}px`;
     }
 
+    // 右键工具栏点击关闭事件
     $toolbarWrapper.addEventListener('click', function(e) {
-            $toolbarWrapper.style.display = 'none';
-    });
-    
+        $toolbarWrapper.style.display = 'none';
+});
+
     
     
     

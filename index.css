@@ -91,8 +91,8 @@ html {
 
 .block-show {
     box-sizing: border-box;
-    display: none;
     position: absolute;
+    display: none;
     width: 100%;
     height: 100%;
     background: #f00;
@@ -112,7 +112,7 @@ html {
     align-items: center;
     position: absolute;
     top: -4px;
-    width: 20px;
+    width: 24px;
     height: 16px;
 
     line-height: 16px;
@@ -231,28 +231,34 @@ html {
     color:#ffffff;
 
 }
-.info th {
-    background:red;
-    color:#ffffff;
-
-}
-.info th,.info td {
-    width: 20px;
-    height: 20px;
-}
-.info th:first-child,.info td:first-child{
-    width: 80px;
-    height: 20px;
-}
-.info tr {
-    height:20px;
-}
 .info {
+    display: flex;
     flex-direction: column;
     text-align: center;
     align-items: center;
-    display: flex;
-    width: 400px;
-    left: calc(50% - 200px);
-    bottom: 100px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    
+    user-select: none;
+}
+
+.info th,.info td {
+    width: 20px;
+}
+.info th:first-child,.info td:first-child {
+    width: 80px;
+    border-left: 1px solid #f00;
+}
+.info th {
+    color: #fff;
+    background: #f00;
+    border-bottom: 1px solid #f00;
+    border-right: 1px solid #f00;
+}
+.info td {
+    color: #666;
+    background: #fff;
+    border-bottom: 1px solid #f00;
+    border-right: 1px solid #f00;
 }
