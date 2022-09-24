@@ -52,10 +52,21 @@
             return;
         }
         var height = gameInfo.height;
-        var $block = domMask.parentElement;
-        var i = parseInt($block.attributes.index.value);
+        var block = domMask.parentElement;
+        var i = parseInt(block.attributes.index.value);
         var mine = mineList[i];
-       $block.innerHTML = `<div class="block-${mine.type} num-${mine.number}">
+        
+       //扣除标记数
+       var blockFlag = document.querySelector(`.block[index="${block.attributes.index.value}"] > .block-flag`);
+       if(block.attributes.flag && $block.attributes.flag.value) {
+           var a = parseInt(block.attributes.flag.value);  
+           gameInfo.mineFlaged[a - 1]--;
+           updateInfo();
+       }
+       block.removeAttribute('flag');
+       blockFlag.innerText = '';
+
+       block.innerHTML = `<div class="block-${mine.type} num-${mine.number}">
        ${mine.number ? mine.number : ''}
        </div>`;
        
@@ -73,16 +84,6 @@
        }
        firstflag = false;
 
-       //扣除标记数
-        var block = domMask.parentElement;
-        var blockFlag = document.querySelector(`.block[index="${block.attributes.index.value}"] > .block-flag`);
-        if(block.attributes.flag && block.attributes.flag.value) {
-            var a = parseInt(block.attributes.flag.value);  
-            gameInfo.mineFlaged[a - 1]--;
-            updateInfo();
-        }
-        block.removeAttribute('flag');
-        blockFlag.innerText = '';
        // 点击到空白时 点击周围八格
        if(mine.type === 'space' && mine.number === 0) {
         setTimeout(function() {
