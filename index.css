@@ -219,36 +219,17 @@ html {
 .block-flag {
     pointer-events: none;
     display: none;
-    flex-direction: column;
-    align-items: center;
     position: absolute;
-    top: -4px;
+    justify-content: center;
     width: 24px;
-    height: 16px;
+    height: 24px;
 
-    line-height: 16px;
-    text-align: center;
-
-    color: #666;
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 5px #aaa;
+    line-height: 24px;
+    color: #fff;
 }
 
 .block[flag] > .block-flag {
     display: flex;
-}
-
-.block-flag::after {
-    position: relative;
-    top: 0;
-    content: '';
-    width: 4px;
-    height: 8px;
-    border-top: 4px solid #fff;
-    border-left: 2px solid rgba(0,0,0,0);
-    border-right: 2px solid rgba(0,0,0,0);
-    box-sizing: border-box;
 }
 
 .message {
