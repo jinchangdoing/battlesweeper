@@ -144,7 +144,7 @@
         message.style.opacity = '0';
         $app.appendChild(message);
         setTimeout(function() {
-            message.style.top = '20px';
+            message.style.top = '140px';
             message.style.opacity = '1';
         }, 0);
         setTimeout(function() {

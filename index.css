@@ -163,7 +163,6 @@ html {
 .message {
     position: fixed;
     padding: 10px;
-    top: 120px;
     right: 20px;
     transition: 0.5s;
 
