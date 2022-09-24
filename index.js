@@ -5,10 +5,11 @@
     var difficulty = 'normal';
     var time = 0;
     var inter = 0;
+    var expRequire=[];
     var playerInfo = {
         hp: 0,
         exp: 0,
-        exprequire: [],
+         
     };
     var gameInfo = {
         width: 0,
@@ -17,7 +18,8 @@
         mineExp: [],
         mineFlaged:[],
     };
-    var firstflag = true;
+    var firstFlag = true;
+    var forceWhiteCount=0;
     var mineList = [];
     var $app = $('#app');
     var $actions = $('.actions');
@@ -25,11 +27,50 @@
     var $boxWrapper = $('.box-wrapper');
     var $info = $('.info');
     var $main = $('.main');
+    var $custom = $('.custom');
     var $toolbar = $('.toolbar');
     var $toolbarWrapper = $('.toolbar-wrapper');
+
+    
+    
+    //根据雷自动调节经验需求\
+    function caculateExpreuire(){
+        expRequire[0]=0;
+        
+        //先根据雷数量设置极限升级经验
+        for(var i=0;i<9;i++)
+        {        
+            for(var j=0;j<=i;j++){
+                expRequire[i+1]=gameInfo.mineNum[j]*gameInfo.mineExp[j];
+                if(expRequire[i+1]===0){
+                   expRequire[i]=999999;
+                }
+                
+            }
+            expRequire[i+1]+=expRequire[i];
+            console.log(expRequire[i]);
+        }
+        //调低前期经验需求
+        expRequire[1]=gameInfo.mineNum[0]/2;
+        expRequire[2]=expRequire[1]+gameInfo.mineNum[0]/4+gameInfo.mineNum[1];
+        expRequire[3]=expRequire[2]+gameInfo.mineNum[0]/4+gameInfo.mineNum[1]+gameInfo.mineNum[2]*3;
+        expRequire[4]=expRequire[3]+gameInfo.mineNum[2]+gameInfo.mineNum[3]*7;
+        if(expRequire[5]<999999)
+            expRequire[5]=expRequire[4]+gameInfo.mineNum[3]+gameInfo.mineNum[4]*31/2;
+        if(expRequire[6]<999999)
+            expRequire[6]=expRequire[5]+gameInfo.mineNum[5]*32-16;
+        //设置等级上限
+        expRequire[9]=999999;
+        for(var t=0;t<10;t++)
+        {
+            expRequire        
+            console.log(expRequire[t]);
+           
+        }
+    }
     function getPlayerLevel() {
         var level = 0;
-        _.forEach(playerInfo.exprequire, function(exp, i) {
+        _.forEach(expRequire, function(exp, i) {
             if(exp <= playerInfo.exp) {
                 level = i + 1;
             }
@@ -38,7 +79,7 @@
     }
     function getNextLevelExp() {
         var nextExp = 0;
-        nextExp = playerInfo.exprequire[getPlayerLevel()]-playerInfo.exp
+        nextExp = expRequire[getPlayerLevel()]-playerInfo.exp
         if(nextExp > 10000)
             return '-';
         return nextExp
@@ -70,10 +111,15 @@
        if((mine.type !== 'space' || mine.number !== 0) && firstflag) {
             initData();
             initView();
-            setTimeout(function() { 
-                blockClick(i);
-            },0);
-            return;    
+            forceWhiteCount++;
+            if(forceWhiteCount<500)
+            {
+                setTimeout(function() { 
+                    blockClick(i);
+                },0);
+                return;                 
+            }
+                
        }
        firstflag = false;
 
@@ -383,10 +429,12 @@
         $actions.append(createButton('normal', '中级'));
         $actions.append(createButton('hard', '高级'));
         $actions.append(createButton('lunatic', '疯狂'));
-        $actions.append(createButton('extra', '鱼'));
+        $actions.append(createButton('extra', '鱼'));  
         $actions.append(createButtonZoom('up', '放大'));
         $actions.append(createButtonZoom('down', '缩小'));
+        $actions.append(createButtonCustom('custom', '自定义'));
         initData(diff);
+        caculateExpreuire();
         initView();
         time = 0;
         if(inter)
@@ -406,6 +454,20 @@
             });
             return $button;
         };
+        function createButtonCustom(level, text) {
+            var $button = $(`<button class="actions-button purple-body">${text}</button>`);
+            $button.on('click', function(e) {
+                console.log($custom);
+                $custom.html(`    
+                <label for="width">width:</label><br>
+                <input type="text" class ="width"id="width" name="width"><br>
+                <label for="lname">Last name:</label><br>
+                <input type="text" id="lname" name="lname">  
+                `
+                )
+            })
+            return $button;
+        };
 
         function createButtonZoom(up, text) {
             var $button = $(`<button class="actions-button purple-body">${text}</button>`);
@@ -422,6 +484,7 @@
         }
     }
     init('normal');
+    
     // 禁用默认右键
     window.oncontextmenu = function(e) {
         return false;
@@ -473,8 +536,7 @@
     // 右键工具栏点击关闭事件
     $toolbarWrapper.on('click', function(e) {
         $toolbarWrapper.css('display', 'none');
-});
-
+    });
     
     
     

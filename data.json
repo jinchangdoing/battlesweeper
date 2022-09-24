@@ -2,19 +2,11 @@ window.data={
    "easy":{
       "playerInfo":{
          "hp":5,
-         "exp":0,
-         "exprequire":[
-            0,
-            10,
-            28,
-            60,
-            90,
-            999999
-         ]
+         "exp":0
       },
       "gameInfo":{
-         "width":14,
-         "height":17,
+         "width":12,
+         "height":15,
          "mineExp":[
             1,
             2,
@@ -53,17 +45,7 @@ window.data={
    "normal":{
       "playerInfo":{
          "hp":5,
-         "exp":0,
-         "exprequire":[
-            0,
-            12,
-            36,
-            75,
-            140,
-            212,
-            290,
-            999999
-         ]
+         "exp":0
       },
       "gameInfo":{
          "width":14,
@@ -106,19 +88,7 @@ window.data={
    "hard":{
       "playerInfo":{
          "hp":10,
-         "exp":0,
-         "exprequire":[
-            0,
-            20,
-            50,
-            150,
-            300,
-            540,
-            860,
-            1270,
-            1890,
-            999999
-         ]
+         "exp":0
       },
       "gameInfo":{
          "width":14,
@@ -161,19 +131,7 @@ window.data={
    "lunatic":{
       "playerInfo":{
          "hp":1,
-         "exp":0,
-         "exprequire":[
-            0,
-            20,
-            50,
-            150,
-            300,
-            550,
-            934,
-            1448,
-            2088,
-            999999
-         ]
+         "exp":0
       },
       "gameInfo":{
          "width":14,
@@ -216,19 +174,7 @@ window.data={
    "extra":{
       "playerInfo":{
          "hp":1,
-         "exp":0,
-         "exprequire":[
-            0,
-            40,
-            100,
-            300,
-            600,
-            1100,
-            1840,
-            2896,
-            4176,
-            999999
-         ]
+         "exp":0
       },
       "gameInfo":{
          "width":26,
