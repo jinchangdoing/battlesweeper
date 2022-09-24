@@ -372,7 +372,7 @@
     
     function init(diff) {
         difficulty = diff;
-        $actions.innerHTML = '';
+        $actions.html('');
         $actions.append(createButton('easy', '初级'));
         $actions.append(createButton('normal', '中级'));
         $actions.append(createButton('hard', '高级'));
