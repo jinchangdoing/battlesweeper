@@ -335,10 +335,12 @@
                 return;
             }
             var $block = $(targetMask.parentElement);
-            var $blockFlag = $(`.block[index="${block.attributes.index.value}"] > .block-flag`);
+            console.log($block[0]);
+            var $blockFlag = $(`.block[index="${$block.attr('index')}"] > .block-flag`);
             // 减去原有标记的等级
             if($block.attr('flag')) {
                 var a = parseInt($block.attr('flag'));  
+                console.log(a);
                 gameInfo.mineFlaged[a - 1]--;
                 updateInfo();
             }
@@ -356,9 +358,10 @@
             var $block = $(targetMask.parentElement);
             var $blockFlag = $(`.block[index="${$block.attr('index')}"] > .block-flag`);
             // 减去原有标记的等级
-            if(flagNum) {
-                var a = parseInt(flagNum);  
-                gameInfo.mineFlaged[a - 1]--;
+            var flagOrigin = $block.attr('flag');
+            if(flagOrigin) {
+                flagOrigin = parseInt(flagOrigin);
+                gameInfo.mineFlaged[flagOrigin - 1]--;
             }
             // 标记新等级
             $block.attr('flag', flagNum);
