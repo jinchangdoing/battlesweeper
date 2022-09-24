@@ -4,6 +4,10 @@ html, body, #app{
     height: 100%;
     box-sizing: border-box;
 }
+
+html {
+    overflow: hidden;
+}
 #app {
 
     padding-top: 100px;
@@ -57,24 +61,94 @@ html, body, #app{
     color: rgb(15, 254, 154);
 }
 .block-mine {
-    background: red;
+    margin: 0;
+    background: #f00;
+    width: 100%;
+    height: 100%;
+
+    line-height: 24px;
+    text-align: center;
 }
 
 .block-mask {
+    box-sizing: border-box;
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #94a0fe;
+    background: #6581ef;
     cursor: pointer;
     color:#fff;
+    border-left: 2px solid #95a1ff;
+    border-top: 2px solid #a5b1ff;
+    border-right: 3px solid #34569a;
+    border-bottom: 3px solid #34569a;
+    filter: brightness(100%);
 }
 
-.main {
+.block-mask:hover {
+    filter: brightness(80%);
+}
+
+.block-show {
+    box-sizing: border-box;
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #f00;
+    border-left: 2px solid #ffa4b3;
+    border-top: 2px solid #ffa4b3;
+    border-right: 3px solid #af0403;
+    border-bottom: 3px solid #af0403;
+
+    line-height: 18px;
+    text-align: center;
+}
+
+.block-flag {
+    pointer-events: none;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: -4px;
+    width: 20px;
+    height: 16px;
+
+    line-height: 16px;
+    text-align: center;
+
+    color: #666;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #aaa;
+}
+
+.block[flag] > .block-flag {
+    display: flex;
+}
+
+.block-flag::after {
     position: relative;
+    top: 0;
+    content: '';
+    width: 4px;
+    height: 8px;
+    border-top: 4px solid #fff;
+    border-left: 2px solid rgba(0,0,0,0);
+    border-right: 2px solid rgba(0,0,0,0);
+    box-sizing: border-box;
+}
+
+
+.main {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
     transition:0.05s;
@@ -121,17 +195,17 @@ html, body, #app{
 .actions > button:last-child {
     border-radius: 0 8px 8px 0 ;
 }
-.toolbar-wrapper{
-    display:none;
+.toolbar-wrapper {
+    display: none;
     position: absolute;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
     left: 0;
     top: 0;
 }
 .toolbar {  
-    display:flex;
-    flex-wrap:wrap;
+    display: flex;
+    flex-wrap: wrap;
     position: fixed;
     width:200px;
     background: #fff;
@@ -141,46 +215,44 @@ html, body, #app{
     left: 0;
     top: 0;
 }
-.toolbar .flag{
-    width:40px;
-    height:40px;
-    margin:0;
-    font-size:20px;
-    border:1px solid #ffffff;
-    box-sizing:border-box; 
-    cursor:pointer;
-    transition: background 0.1s,color 0.1s;
+.toolbar .flag {
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    font-size: 20px;
+    border: 1px solid #ffffff;
+    box-sizing: border-box; 
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
        
 }
-.toolbar .flag:hover{
+.toolbar .flag:hover {
     background:#94a0fe;
     color:#ffffff;
 
 }
-.info th{
+.info th {
     background:red;
     color:#ffffff;
 
 }
-.info th,.info td{
-    width:20px;
-    height:20px;
+.info th,.info td {
+    width: 20px;
+    height: 20px;
 }
 .info th:first-child,.info td:first-child{
-    width:80px;
-    height:20px;
+    width: 80px;
+    height: 20px;
 }
-.info tr{
+.info tr {
     height:20px;
 }
 .info {
-
-    
     flex-direction: column;
-    text-align:center;
+    text-align: center;
     align-items: center;
-    display:flex;
-    width:400px;
+    display: flex;
+    width: 400px;
     left: calc(50% - 200px);
     bottom: 100px;
 }

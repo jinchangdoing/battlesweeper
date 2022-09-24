@@ -3,8 +3,8 @@
 
 (function(){
     var difficulty = 'normal';
-    var time=0;
-    var inter=0;
+    var time = 0;
+    var inter = 0;
     var playerInfo = {
         hp: 0,
         exp: 0,
@@ -47,9 +47,12 @@
 
 
     // 点击事件
-    function blockClick(e) {
+    function blockClick(domMask) {
+        if(domMask.classList.value !== 'block-mask') {
+            return;
+        }
         var height = gameInfo.height;
-        var $block = e.target.parentElement;
+        var $block = domMask.parentElement;
         var i = parseInt($block.attributes.index.value);
         var mine = mineList[i];
        $block.innerHTML = `<div class="block-${mine.type} num-${mine.number}">
@@ -57,20 +60,21 @@
        </div>`;
        
        // 第一次点击必白
-       if((mine.type !== 'space' || mine.number !== 0)&&firstflag){
+       if((mine.type !== 'space' || mine.number !== 0) && firstflag) {
             initData();
             initView();
             
-            setTimeout(function(){ 
-                document.querySelector(`.block[index="${i}"] > .block-mask`).click()
+            setTimeout(function() { 
+                var target = document.querySelector(`.block[index="${i}"] > .block-mask`);
+                blockClick(target);
             },0);
             return;    
                     
        }
-       firstflag=false;
+       firstflag = false;
        //扣除标记数
-        if(e.target.innerText){
-                    var a = parseInt(e.target.innerText);  
+        if(domMask.innerText){
+                    var a = parseInt(domMask.innerText);  
                     gameInfo.mineFlaged[a-1]--;
         } 
        
@@ -80,22 +84,21 @@
             for(var n = 0; n < 9; n++) {
                 var x = parseInt(n / 3) - 1;
                 var y = parseInt(n % 3) - 1;
-                if(i%height === 0 && x=== -1){
+                if(i % height === 0 && x === -1){
                    continue
                 }
-                if(i%height===(height-1)&&x===1){
+                if(i % height === (height - 1) && x === 1){
                    continue
                 }
                 var index = i + x + y * height;
                 
             var dom = document.querySelector(`.block[index="${index}"] > .block-mask`);
-            if(dom) dom.click();
+            if(dom) blockClick(dom);
         }
         }, 10);
        }
        // 点击到雷时 扣除血量
        if(mine.type === 'mine' && mine.number > getPlayerLevel()) {
-                              
             playerInfo.hp -= mine.number * (mine.number - getPlayerLevel());
             $box.style.transform='rotate(3deg)'
             setTimeout(function(){
@@ -118,19 +121,16 @@
        if(playerInfo.hp <= 0) {
             gameOver();
        }
-
        // 点击到雷时 增加经验,扣除雷数
        if(mine.type === 'mine') {
-            
-                    
             gameInfo.mineNum[mine.number-1]--;
             playerInfo.exp += gameInfo.mineExp[mine.number-1];
        }
 
        // 展示数据
-       
        updateInfo();
     }
+    
     function message(msg) {
         var message = document.createElement('div');
         message.classList.add('message');
@@ -167,12 +167,11 @@
         _.filter(mineList, function(m) {
             return m.type === 'mine';
         }).forEach(function(m) {
-            var dom = document.querySelector(`.block[index="${m.i}"] > .block-mask`);
+            var dom = document.querySelector(`.block[index="${m.i}"] > .block-show`);
             setTimeout(function() {
                 if(dom) {
-                    dom.innerHTML = `<div class="block-${m.type}">
-                    ${m.number}
-                    </div>`;
+                    dom.style.display = 'block';
+                    dom.innerText = m.number;
                 }
             }, 1 * m.i);
         });
@@ -226,7 +225,7 @@
         playerInfo = JSON.parse(JSON.stringify(data[difficulty].playerInfo));
         gameInfo = JSON.parse(JSON.stringify(data[difficulty].gameInfo));
         mineList = [];
-        firstflag=true;
+        firstflag = true;
         var width = gameInfo.width;
         var height = gameInfo.height;
         var num = width * height;
@@ -268,8 +267,6 @@
                    continue
                 }
                 
-                
-                
                 var index = i + x + y * height;
                 if(mineList[index] && mineList[index].type === 'space') {
                     mineList[index].number += m.number;
@@ -290,32 +287,23 @@
             }
             var $block = document.createElement('div');
             var $blockMask = document.createElement('div');
+            var $blockFlag = document.createElement('div');
+            var $blockShow = document.createElement('div');
             $block.classList.add('block');
             $blockMask.classList.add('block-mask');
+            $blockFlag.classList.add('block-flag');
+            $blockShow.classList.add('block-show');
             $block.setAttribute('index', i);
             $block.appendChild($blockMask);
+            $block.appendChild($blockFlag);
+            $block.appendChild($blockShow);
             $blocks.appendChild($block);
-            $blockMask.addEventListener('click', blockClick);
             if(m.y === height - 1) {
                 $blocks = document.createElement('div');
                 $blocks.classList.add('blocks');
             }
         });
-        var $mines =document.querySelectorAll(`.block > .block-mask`);
-        var targetMask;
-        _.forEach($mines,function(m,i){
-            m.oncontextmenu=function(e) {
-                targetMask=e.target;
-                $toolbar.style.left=e.clientX+'px';
-                $toolbar.style.top=e.clientY+'px' ;
-                $toolbarWrapper.style.display='block' ;
-            }
-        })
   
-    
-    
-        
-        
         $toolbar.innerHTML=`    
                 <button class="flag clearflag" data="0">0</button>
                 <button class="flag setflag" data="1">1</button> 
@@ -327,40 +315,59 @@
                 <button class="flag setflag" data="7">7</button> 
                 <button class="flag setflag" data="8">8</button> 
                 <button class="flag setflag" data="9">9</button>      
-        `   
+        `;
         
+        // 增加右键事件
+        var targetMask;
+        var $mines = document.querySelectorAll(`.block > .block-mask`);
+        _.forEach($mines, function(m, i) {
+            m.addEventListener('contextmenu', function(e) {
+                targetMask = e.target;
+                $toolbar.style.left = e.clientX + 'px';
+                $toolbar.style.top = e.clientY + 'px';
+                $toolbarWrapper.style.display = 'block';
+            });
+        })
+
         // 清除雷等级
-        
         var $clearflag = document.querySelector('.clearflag');
         $clearflag.addEventListener('click', function(e) {
-            if(!targetMask)
-                return
-            if(targetMask.innerText){
-                var a = parseInt(targetMask.innerText);  
-                gameInfo.mineFlaged[a-1]--;
-                updateInfo()
+            if(!targetMask) {
+                return;
             }
-            targetMask.innerText='';
-            
-                 
+            var block = targetMask.parentElement;
+            var blockFlag = document.querySelector(`.block[index="${block.attributes.index.value}"] > .block-flag`);
+            // 减去原有标记的等级
+            if(block.attributes.flag && block.attributes.flag.value) {
+                var a = parseInt(block.attributes.flag.value);  
+                gameInfo.mineFlaged[a - 1]--;
+                updateInfo();
+            }
+            // 取消标记等级
+            block.removeAttribute('flag');
+            blockFlag.innerText = '';
         });
         
         // 标记雷等级
         var $setflags = document.querySelectorAll(`.setflag`);
-        _.forEach($setflags,function(s,i){
-            s.addEventListener('click', function(e) {           
-                if(!targetMask)
-                    return
-                if(targetMask.innerText){
-                    var a = parseInt(targetMask.innerText);  
-                    gameInfo.mineFlaged[a-1]--;
-                }  
-                var count = parseInt(e.target.attributes.data.value);
-                targetMask.innerText=count; 
-                             
-                gameInfo.mineFlaged[count-1]++;
-                updateInfo()             
-                
+        _.forEach($setflags,function(s, i) {
+            s.addEventListener('click', function(e) {     
+                var flagNum = parseInt(e.target.attributes.data.value);   
+                if(!targetMask) {
+                    return;
+                }
+                var block = targetMask.parentElement;
+                var blockFlag = document.querySelector(`.block[index="${block.attributes.index.value}"] > .block-flag`);
+                // 减去原有标记的等级
+                if(block.attributes.flag && block.attributes.flag.value) {
+                    var a = parseInt(block.attributes.flag.value);  
+                    gameInfo.mineFlaged[a - 1]--;
+                }
+                // 标记新等级
+                block.setAttribute('flag', flagNum);
+                blockFlag.innerText = flagNum;
+                gameInfo.mineFlaged[flagNum - 1]++;
+                updateInfo();        
             });
     })
         
@@ -388,7 +395,7 @@
         if(inter)
             clearInterval(inter);
         inter=setInterval(function(){
-            time++;
+            time ++;
             var $time = document.querySelector('.time');
             if($time)
                 $time.innerText='TIME: '+time;
@@ -405,8 +412,6 @@
             return $button;
         };
 
-        var zoomList = [0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0];
-        var zoomLevel = 5;
         function createButtonZoom(up, text) {
             var $button = document.createElement('button');
             $button.classList.add('actions-button');
@@ -422,13 +427,48 @@
         }
     }
     init('normal');
-    window.oncontextmenu=function(e) {
+    window.oncontextmenu = function(e) {
         return false;
     }
-    
+    // 缩放事件
+    var zoomList = [0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0];
+    var zoomLevel = 5;
+    window.addEventListener('wheel', function(e) {
+        if(e.deltaY > 0) {
+            $main.style.transform = `scale(${zoomList[--zoomLevel]})`;
+        } else {
+            $main.style.transform = `scale(${zoomList[++zoomLevel]})`;
+        }
+    });
+
+    // 鼠标拖拽事件
+    var cx = 0, cy = 0, mx = 0, my = 0;
+    window.addEventListener('mousedown', function(e) {
+        if(e.button !== 0) {
+            return;
+        }
+        cx = e.clientX;
+        cy = e.clientY;
+        window.addEventListener('mousemove', onMouseMove);
+    });
+    window.addEventListener('mouseup', function(e) {
+        if(e.button !== 0) {
+            return;
+        }
+        if (Math.abs(e.clientX - cx) < 5 && Math.abs(e.clientY - cy < 5)) {
+            blockClick(e.target);
+        }
+        mx = mx - cx + e.clientX;
+        my = my - cy + e.clientY;
+        window.removeEventListener('mousemove', onMouseMove);
+    });
+    function onMouseMove(e) {
+        $main.style.left = `${mx - cx + e.clientX}px`;
+        $main.style.top = `${my - cy + e.clientY}px`;
+    }
+
     $toolbarWrapper.addEventListener('click', function(e) {
-            $toolbarWrapper.style.display='none' 
-     
+            $toolbarWrapper.style.display = 'none';
     });
     
     
