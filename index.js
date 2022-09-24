@@ -302,6 +302,10 @@
             <div class="block-flag"></div>
             </div>`);
             $blocks.append($block);
+            $blocks.find('.block-mask').on('click', function(e) {
+                var index = $(e.target.parentElement).attr('index');
+                blockClick(parseInt(index));
+            });
             if(m.y === height - 1) {
                 $blocks = $(`<div class="blocks"></div>`);
             }
@@ -335,7 +339,6 @@
                 return;
             }
             var $block = $(targetMask.parentElement);
-            console.log($block[0]);
             var $blockFlag = $(`.block[index="${$block.attr('index')}"] > .block-flag`);
             // 减去原有标记的等级
             if($block.attr('flag')) {
@@ -439,7 +442,7 @@
     // 鼠标拖拽事件
     var cx = 0, cy = 0, mx = 0, my = 0;
     $main.on('mousedown', function(e) {
-        if(e.button !== 0) {
+        if(e.button !== 1) {
             return;
         }
         cx = e.clientX;
@@ -447,7 +450,7 @@
         $main.on('mousemove', onMouseMove);
     });
     $main.on('mouseup', function(e) {
-        if(e.button !== 0) {
+        if(e.button !== 1) {
             return;
         }
         mx = mx - cx + e.clientX;
@@ -460,8 +463,6 @@
         if (Math.abs(e.clientX - cx) > 5 || Math.abs(e.clientY - cy > 5)) {
             return;
         }
-        var index = $(e.target.parentElement).attr('index');
-        blockClick(parseInt(index));
     });
 
     function onMouseMove(e) {
