@@ -424,7 +424,7 @@
     var zoomList = [0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0];
     var zoomLevel = 5;
     $(window).on('wheel', function(e) {
-        if(e.deltaY > 0) {
+        if(e.originalEvent.deltaY > 0) {
             $boxWrapper.css('transform',`scale(${zoomList[--zoomLevel]})`);
         } else {
             $boxWrapper.css('transform',`scale(${zoomList[++zoomLevel]})`);
