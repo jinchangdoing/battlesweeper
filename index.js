@@ -2,22 +2,18 @@
 
 
 (function(){
+    var version=1;
     var difficulty = 'normal';
     var time = 0;
     var inter = 0;
     var expRequire=[];
-    var playerInfo = {
-        hp: 0,
-        exp: 0,
-         
-    };
-    var gameInfo = {
-        width: 0,
-        height: 0,
-        mineNum: [],
-        mineExp: [],
-        mineFlaged:[],
-    };
+    var playerInfo;
+    var gameInfo
+    var mineNum=[];
+    var expRequire=[];
+    var expTemp=[];
+    var mineProportion=[0.3, 0.2 , 0.165 , 0.135, 0.105, 0.09, 0.06, 0.04, 0.015];
+    var expMultiplier=[0.5,0.3,0.75,0.875,0.96875,1,1,1,1];
     var firstFlag = true;
     var forceWhiteCount=0;
     var mineList = [];
@@ -30,43 +26,37 @@
     var $custom = $('.custom');
     var $toolbar = $('.toolbar');
     var $toolbarWrapper = $('.toolbar-wrapper');
-
     
     
     //根据雷自动调节经验需求\
     function caculateExpreuire(){
+        expTemp[0]=0;
         expRequire[0]=0;
-        
         //先根据雷数量设置极限升级经验
-        for(var i=0;i<9;i++)
+
+        for(var i=0;i<10;i++)
         {        
             for(var j=0;j<=i;j++){
-                expRequire[i+1]=gameInfo.mineNum[j]*gameInfo.mineExp[j];
-                if(expRequire[i+1]===0){
-                   expRequire[i]=999999;
+                expTemp[i+1]=mineNum[j]*gameInfo.mineExp[j];
+                if(expTemp[i+1]===0){
+                   expTemp[i]=999999;
                 }
                 
             }
-            expRequire[i+1]+=expRequire[i];
-            console.log(expRequire[i]);
+            expTemp[i+1]+=expTemp[i];
+            
+            //expRequire[i+1]=expRequire[i+1]*expMultiplier[i];      
         }
-        //调低前期经验需求
-        expRequire[1]=gameInfo.mineNum[0]/2;
-        expRequire[2]=expRequire[1]+gameInfo.mineNum[0]/4+gameInfo.mineNum[1];
-        expRequire[3]=expRequire[2]+gameInfo.mineNum[0]/4+gameInfo.mineNum[1]+gameInfo.mineNum[2]*3;
-        expRequire[4]=expRequire[3]+gameInfo.mineNum[2]+gameInfo.mineNum[3]*7;
-        if(expRequire[5]<999999)
-            expRequire[5]=expRequire[4]+gameInfo.mineNum[3]+gameInfo.mineNum[4]*31/2;
-        if(expRequire[6]<999999)
-            expRequire[6]=expRequire[5]+gameInfo.mineNum[5]*32-16;
-        //设置等级上限
+
+
+
+        for(var k=0;k<9;k++)
+        { 
+            expRequire[k+1]=expTemp[k]+parseInt(mineNum[k]*gameInfo.mineExp[k]*expMultiplier[k]);
+            console.log(expRequire[k]);
+        }
         expRequire[9]=999999;
-        for(var t=0;t<10;t++)
-        {
-            expRequire        
-            console.log(expRequire[t]);
-           
-        }
+ 
     }
     function getPlayerLevel() {
         var level = 0;
@@ -88,8 +78,10 @@
 
 
     // 点击事件
-    function blockClick(i) {
+    function blockClick(i,ver) {
         // 获取$dom对象
+        if(ver&&ver!=version)
+            return;
         var $block = $(`.block[index="${i}"]`);
         var $blockMask = $block.find('.block-mask');
         if(!$blockMask[0]) {
@@ -108,20 +100,21 @@
        }
        
        // 第一次点击必白
-       if((mine.type !== 'space' || mine.number !== 0) && firstflag) {
+       if((mine.type !== 'space' || mine.number !== 0) && firstFlag) {
             initData();
             initView();
             forceWhiteCount++;
             if(forceWhiteCount<500)
             {
                 setTimeout(function() { 
-                    blockClick(i);
+
+                    blockClick(i,ver);
                 },0);
                 return;                 
             }
                 
        }
-       firstflag = false;
+       firstFlag = false;
 
        // 打开雷
        $block.html(`
@@ -143,13 +136,14 @@
                    continue
                 }
                 var index = i + x + y * height;
-                blockClick(index);
+                blockClick(index,ver);
             }
         }, 10);
        }
        // 点击到雷时 扣除血量
        if(mine.type === 'mine' && mine.number > getPlayerLevel()) {
             playerInfo.hp -= mine.number * (mine.number - getPlayerLevel());
+            $box.css('transition', '0.05s');
             $box.css('transform', 'rotate(3deg)');
             setTimeout(function(){
                 $box.css('transform', 'rotate(-3deg)');
@@ -173,7 +167,7 @@
        }
        // 点击到雷时 增加经验,扣除雷数
        if(mine.type === 'mine') {
-            gameInfo.mineNum[mine.number-1]--;
+            mineNum[mine.number-1]--;
             playerInfo.exp += gameInfo.mineExp[mine.number-1];
        }
        // 更新展示数据
@@ -183,7 +177,9 @@
     // 消息提示
     function message(msg) {
         var $message = $(`<div class="message" style="top: -100px; opacity: 0;">
-            ${msg}
+            <div class="message-content">
+                ${msg}
+            </div>
         </div>`);
         $app.append($message);
         setTimeout(function() {
@@ -197,6 +193,124 @@
         setTimeout(function() {
             $app.remove($message);
         }, 3000);
+    }
+
+
+    function messageCustom(msg) {
+        var $messageWrapper = $(`
+            <div class="custom-warpper">
+                <div class="custom-message" style="top: -100px; opacity: 0;">
+                    <span>行:</span>
+                    <input class="custom-input custom-row" value="30"   oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
+                    <span>列:</span>
+                    <input class="custom-input custom-column" value="30""  oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
+                    <span>雷数:</span>
+                    <input class="custom-input custom-mine" value="300" oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
+                    <span>HP:</span>
+                    <input class="custom-input custom-hp" value="30"   oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
+                    <span></span>
+                    <div>
+                        <button class="prime-button custom-submit">确定</button>
+                        <button class="default-button custom-cancel">关闭</button>
+                    </div>  
+                </div>)
+            </div>`);
+        $app.append($messageWrapper);
+        var $message=$messageWrapper.find('.custom-message'); 
+        var $hp =$message.find('.custom-hp');
+        var $mine =$message.find('.custom-mine');
+        var $row =$message.find('.custom-row');
+        var $column =$message.find('.custom-column');
+        $messageWrapper.find('.custom-submit').on('click',function(e){
+            if(!$hp.val()||!$mine.val()||!$row.val()||!$column.val())
+            {
+                return message('输入不合法');
+            }
+            if($row.val()<5||$row.val()>60)
+                return message('行数为5-60');
+            if($column.val()<5||$column.val()>60)
+                return message('列数为5-60');
+            if($mine.val()>($row.val()*$column.val()*0.4))
+                return message('雷数应小于总棋盘数的40%！');   
+            if($mine.val()<10)
+                return message('雷数至少为10');    
+
+
+            window.data.custom={
+                playerInfo:{
+                   hp:$hp.val(),
+                   exp:0
+                },
+                gameInfo:{
+                   width:$column.val(),
+                   height:$row.val(),
+                   mineExp:[
+                      1,
+                      2,
+                      4,
+                      8,
+                      16,
+                      32,
+                      64,
+                      128,
+                      256
+                   ],
+                   mineNumTotal:$mine.val(),
+                   mineFlaged:[
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0,
+                      0
+                   ]
+                }
+             }
+            init('custom');
+            $message.css('top', '-100px');
+            $message.css('opacity', '0');
+            setTimeout(function() {
+                $messageWrapper.remove();
+            }, 500);
+
+
+
+        })
+    
+        $messageWrapper.find('.custom-cancel').on('click',function(){
+
+            $message.css('top', '-100px');
+            $message.css('opacity', '0');
+            setTimeout(function() {
+                $messageWrapper.remove();
+            }, 500);
+           
+
+
+        })
+
+        $messageWrapper.find('.custom-input').on('input',function(e){
+            var a=parseInt(e.originalEvent.data);
+            if(a!=e.originalEvent.data)
+            {
+                console.log(a);
+                return false;
+                
+            }
+
+        })
+
+
+
+
+        setTimeout(function() {
+            $message.css('top', '240px');
+            $message.css('opacity', '1');
+        }, 0);
+       
     }
 
     function gameOver() {
@@ -240,15 +354,15 @@
                 </tr>
                 <tr>
                     <td>剩余雷数</td>
-                    <td>${gameInfo.mineNum[0]}</td>
-                    <td>${gameInfo.mineNum[1]}</td>
-                    <td>${gameInfo.mineNum[2]}</td>
-                    <td>${gameInfo.mineNum[3]}</td>
-                    <td>${gameInfo.mineNum[4]}</td>
-                    <td>${gameInfo.mineNum[5]}</td>
-                    <td>${gameInfo.mineNum[6]}</td>
-                    <td>${gameInfo.mineNum[7]}</td>
-                    <td>${gameInfo.mineNum[8]}</td>   
+                    <td>${mineNum[0]}</td>
+                    <td>${mineNum[1]}</td>
+                    <td>${mineNum[2]}</td>
+                    <td>${mineNum[3]}</td>
+                    <td>${mineNum[4]}</td>
+                    <td>${mineNum[5]}</td>
+                    <td>${mineNum[6]}</td>
+                    <td>${mineNum[7]}</td>
+                    <td>${mineNum[8]}</td>   
                 </tr>
                 <tr>
                     <td>标记雷数</td>
@@ -285,11 +399,14 @@
         playerInfo = JSON.parse(JSON.stringify(data[difficulty].playerInfo));
         gameInfo = JSON.parse(JSON.stringify(data[difficulty].gameInfo));
         mineList = [];
-        firstflag = true;
+        firstFlag = true;
         var width = gameInfo.width;
         var height = gameInfo.height;
         var num = width * height;
-        var mineNum = gameInfo.mineNum;
+        for(var i =0;i<9;i++){
+            mineNum[i] =parseInt(gameInfo.mineNumTotal*mineProportion[i]);
+            console.log()
+        }
         // 填充雷
         _.forEach(mineNum, function(n, i) {
             var mine = { type: 'mine', number: i + 1 };
@@ -350,7 +467,7 @@
             $blocks.append($block);
             $blocks.find('.block-mask').on('click', function(e) {
                 var index = $(e.target.parentElement).attr('index');
-                blockClick(parseInt(index));
+                blockClick(parseInt(index),version);
             });
             if(m.y === height - 1) {
                 $blocks = $(`<div class="blocks"></div>`);
@@ -423,8 +540,10 @@
     }
     
     function init(diff) {
+        version++;
         difficulty = diff;
         $actions.html('');
+        $actions.append(createButtonReset('重新开始'));
         $actions.append(createButton('easy', '初级'));
         $actions.append(createButton('normal', '中级'));
         $actions.append(createButton('hard', '高级'));
@@ -432,8 +551,9 @@
         $actions.append(createButton('extra', '鱼'));  
         $actions.append(createButtonZoom('up', '放大'));
         $actions.append(createButtonZoom('down', '缩小'));
-        $actions.append(createButtonCustom('custom', '自定义'));
-        initData(diff);
+        $actions.append(createButtonCustom('自定义'));
+        
+        initData();
         caculateExpreuire();
         initView();
         time = 0;
@@ -454,17 +574,44 @@
             });
             return $button;
         };
-        function createButtonCustom(level, text) {
+
+
+        function createButtonReset(text) {
+            var $button = $(`
+                <div class="shinpei">
+                    <div class="shinpei-01"></div>
+                    <div class="shinpei-02"></div>
+                    <div class="shinpei-03"></div>
+                </div>`
+            );
+
+            $button.on('click', function(e) {
+                init(difficulty);
+                $box.css('transition', '0s');
+                $box.css('transform', 'rotateY(0deg)');
+
+
+
+                $box.css('transition', '0.25s');
+                $box.css('transform', 'rotateY(90deg)');
+                
+                setTimeout(function(){
+
+                    $box.css('transition', '0s');
+                    $box.css('transform', 'rotateY(-90deg)');          
+                    $box.css('transition', '0.25s');
+                    $box.css('transform', 'rotateY(0deg)');
+                },250)
+
+
+            });
+            return $button;
+        };
+        function createButtonCustom(text) {
             var $button = $(`<button class="actions-button purple-body">${text}</button>`);
             $button.on('click', function(e) {
-                console.log($custom);
-                $custom.html(`    
-                <label for="width">width:</label><br>
-                <input type="text" class ="width"id="width" name="width"><br>
-                <label for="lname">Last name:</label><br>
-                <input type="text" id="lname" name="lname">  
-                `
-                )
+
+                messageCustom();
             })
             return $button;
         };

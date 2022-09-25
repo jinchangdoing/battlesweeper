@@ -1,0 +1,67 @@
+
+
+.shinpei {
+    position: relative;
+    width: 300px;
+    height: 120px;
+
+    cursor: pointer;
+    border-radius: 4px;
+    background: url(shinpei/shinpei.png);
+    overflow: hidden;
+
+    top: 0;
+    transition: 0.2s;
+}
+
+.shinpei:hover {
+    top: -4px;
+    box-shadow: 0 0 5px #12fe21;
+}
+
+.shinpei-01, .shinpei-02, .shinpei-03 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover !important;
+}
+
+.shinpei-01 {
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+.shinpei:hover .shinpei-01 {
+    opacity: 0;
+}
+
+
+.shinpei-02 {
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+.shinpei:hover .shinpei-02 {
+    opacity: 1;
+}
+
+.shinpei-03 {
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.shinpei:hover .shinpei-03 {
+    opacity: 1;
+}
+
+.shinpei-01 {
+    background: url(shinpei/shinpei_01.png);
+}
+
+.shinpei-02 {
+    background: url(shinpei/shinpei_02.png);
+}
+
+.shinpei-03 {
+    background: url(shinpei/shinpei_03.png);
+}

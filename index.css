@@ -46,8 +46,8 @@ html {
 
 .aside {
     display: flex;
+    justify-content: space-between;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
     position: relative;
     width: 300px;
@@ -115,6 +115,9 @@ html {
 .aside .actions > button:hover {
     background: #b4c0ff;
 }
+.aside .custom{
+    height: 300px;
+}
 
 .red-body {
     color: #fff;
@@ -133,7 +136,13 @@ html {
     border-right: 3px solid #34569a !important;
     border-bottom: 3px solid #34569a !important;
 }
+.aside .actions .action-reset{
+    
 
+
+
+
+}
 .blocks {
     position: relative;
     display: flex;
@@ -233,16 +242,73 @@ html {
 }
 
 .message {
+    display: flex;
+    justify-content: center;
     position: fixed;
-    padding: 10px;
-    right: 20px;
+    
+    left:0px;
     transition: 0.5s;
+    width: calc(100% - 300px);
+    
+}
+.message>.message-content{
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 10px #efefef;
+    border-radius: 4px;
 
+
+}
+.custom-warpper{
+    position: absolute;
+    width: 100%;
+    height: 100%;    
+}
+.custom-message {
+    display: flex;
+    flex-wrap:wrap;
+    position: fixed;
+    left: calc(50% - 350px);
+    width: 400px;
+    padding: 20px;
+    transition: 0.5s;
+    border:1px solid #d9d9d9;
     background: #fff;
     box-shadow: 0 0 10px #efefef;
     border-radius: 4px;
 }
+.custom-message>:nth-child(2n-1){
+    box-sizing: border-box;
+    line-height: 16px;
+    text-align: right;
+    padding: 10px;
+    height: 36px;   
+    margin-top: 10px;   
+    width: 100px;   
+}
+.custom-message>:nth-child(2n){
+    box-sizing: border-box;
+    margin-top: 10px;
+    height: 36px;
+    width: calc(100% - 140px);
+    
+}
 
+.custom-input{
+    border:1px solid #d9d9d9;
+    outline: none;
+    border-radius: 2px;
+    padding: 0px 15px;
+}.custom-input:hover{
+
+    border:1px solid rgb(80, 166, 252);
+
+}
+.custom-input:focus{
+    border:1px solid rgb(80, 166, 252);
+    box-shadow: 0 0 0 2px rgb(184, 219, 255);
+
+}
 .toolbar-wrapper {
     display: none;
     position: absolute;
@@ -279,7 +345,32 @@ html {
     color:#ffffff;
 
 }
+.prime-button{
+    background-color: rgb(69, 156, 243);
+    color:#ffffff;
+    padding: 5px 20px;
+    border: 1px solid rgb(69, 156, 243);
+    border-radius: 2px;
+    height: 36px;
+    transition: 0.05s;
+    cursor: pointer;
+}
+.default-button{
+    background-color:#ffffff;
+    color:#303030;
+    padding: 5px 20px;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    height: 36px;
+    transition: 0.05s;
+    cursor: pointer;
+}
+.prime-button:hover{
+    border: 1px solid rgb(80, 166, 252);
+    background-color: rgb(80, 166, 252);
 
-.custom .width{
-  width:20px;
+}
+.default-button:hover{
+    border: 1px solid rgb(80, 166, 252);
+    color: rgb(80, 166, 252);
 }

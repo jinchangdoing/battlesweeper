@@ -5,8 +5,8 @@ window.data={
          "exp":0
       },
       "gameInfo":{
-         "width":12,
-         "height":15,
+         "width":14,
+         "height":16,
          "mineExp":[
             1,
             2,
@@ -18,17 +18,7 @@ window.data={
             128,
             256
          ],
-         "mineNum":[
-            20,
-            14,
-            8,
-            4,
-            2,
-            0,
-            0,
-            0,
-            0
-         ],
+         "mineNumTotal":60,
          "mineFlaged":[
             0,
             0,
@@ -48,8 +38,8 @@ window.data={
          "exp":0
       },
       "gameInfo":{
-         "width":14,
-         "height":17,
+         "width":15,
+         "height":18,
          "mineExp":[
             1,
             2,
@@ -61,17 +51,7 @@ window.data={
             128,
             256
          ],
-         "mineNum":[
-            24,
-            18,
-            12,
-            8,
-            4,
-            2,
-            1,
-            0,
-            0
-         ],
+         "mineNumTotal":80,
          "mineFlaged":[
             0,
             0,
@@ -104,17 +84,7 @@ window.data={
             128,
             256
          ],
-         "mineNum":[
-            40,
-            28,
-            22,
-            18,
-            14,
-            12,
-            8,
-            5,
-            2
-         ],
+         "mineNumTotal":137,
          "mineFlaged":[
             0,
             0,
@@ -147,17 +117,7 @@ window.data={
             128,
             256
          ],
-         "mineNum":[
-            40,
-            28,
-            22,
-            18,
-            14,
-            12,
-            8,
-            5,
-            2
-         ],
+         "mineNumTotal":137,
          "mineFlaged":[
             0,
             0,
@@ -190,17 +150,7 @@ window.data={
             128,
             256
          ],
-         "mineNum":[
-            80,
-            56,
-            44,
-            36,
-            28,
-            24,
-            16,
-            10,
-            4
-         ],
+         "mineNumTotal":274,
          "mineFlaged":[
             0,
             0,
