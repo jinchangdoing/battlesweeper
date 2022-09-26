@@ -227,7 +227,7 @@ html {
 
 .block-flag {
     pointer-events: none;
-    display: none;
+    display: flex;
     position: absolute;
     justify-content: center;
     width: 24px;
@@ -235,10 +235,6 @@ html {
 
     line-height: 24px;
     color: #fff;
-}
-
-.block[flag] > .block-flag {
-    display: flex;
 }
 
 .message {
