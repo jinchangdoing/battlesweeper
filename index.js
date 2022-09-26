@@ -1,6 +1,6 @@
 (function () {
-  var blockTemp=[];
-  var excuteNum=0;
+  var blockTemp = [];
+  var excuteNum = 0;
   var version = 1;
   var firstFlag = true;
   var difficulty = "normal";
@@ -71,18 +71,18 @@
     // 获取全局变量
     var height = gameInfo.height;
     var mine = mineList[i];
-    
+
     // 校验
     if (ver && ver != version) {
-      
+
       return;
     }
     if (!mine) {
-      
+
       return;
     }
     if (mine.clicked) {
-      
+
       return;
     }
     // 标记已点击
@@ -98,18 +98,18 @@
       initView();
       blockClick(i, ver);
       return;
-      
+
     }
     firstFlag = false;
-  
+
 
 
     // 打开雷
 
- 
+
     blockTemp.push(mine);
-   // mine.$block.html(mine.blockHtml);
- 
+    // mine.$block.html(mine.blockHtml);
+
 
     // 点击到空白时 点击周围八格
     if (mine.type === "space" && mine.number === 0) {
@@ -125,17 +125,17 @@
             continue;
           }
           var index = i + x + y * height;
-          if(mineList[i].clicked!==false)
+          if (mineList[i].clicked !== false)
             blockClick(index, ver);
         }
-        
-        if(--excuteNum===0){
+
+        if (--excuteNum === 0) {
           updateTable();
-          
+
         }
 
-       }, 0);
-      
+      }, 0);
+
       return;
     }
 
@@ -169,31 +169,18 @@
       mineNum[mine.number - 1]--;
       playerInfo.exp += gameInfo.mineExp[mine.number - 1];
     }
-    if(excuteNum===0){
-      
+    if (excuteNum === 0) {
+
       updateTable();
-      
-    }     
+
+    }
   }
-function updateTable(){
-
-
-
-
-    _.forEach(blockTemp,function(m,i){
-        setTimeout(function(){
-          m.$block.html(m.blockHtml);   
-
-
-        },(m.y)*5)
-
-
-          
+  function updateTable() {
+    _.forEach(blockTemp, function (m, i) {
+      m.$block.html(m.blockHtml);
     });
-    blockTemp=[];
-  
-  
-}
+    blockTemp = [];
+  }
   // 消息提示
   function message(msg) {
     var $message = $(`<div class="message" style="top: -100px; opacity: 0;">
@@ -309,27 +296,27 @@ function updateTable(){
       }, 1 * m.i);
     });
   }
-  
-  function updateBlock(){
+
+  function updateBlock() {
 
 
-    var mine=mineList;
+    var mine = mineList;
     var $block;
-    
-    _.forEach(mine,function(m,i){
-      if(me[i].isOpened===1){
+
+    _.forEach(mine, function (m, i) {
+      if (me[i].isOpened === 1) {
         $block = $(`.block[index=${i}]`);
-          $block.html(`           
+        $block.html(`           
             <div class="block-${mine[i].type} num-${mine[i].number}">
             ${mine[i].number ? mine[i].number : ""}
             </div>
-          `);  
+          `);
 
-        
-      }      
+
+      }
     });
   }
-  
+
   //更新显示数据面板
   function updateInfo() {
     $info.html(`
@@ -397,31 +384,31 @@ function updateTable(){
     var width = gameInfo.width;
     var height = gameInfo.height;
     var num = width * height;
-    var safeList=[];
-    if(safe){
-    for (var n = 0; n < 9; n++) {
-      var x = parseInt(n / 3) - 1;
-      var y = parseInt(n % 3) - 1;
-      if(safe<width && y === -1){
-        continue;
+    var safeList = [];
+    if (safe) {
+      for (var n = 0; n < 9; n++) {
+        var x = parseInt(n / 3) - 1;
+        var y = parseInt(n % 3) - 1;
+        if (safe < width && y === -1) {
+          continue;
 
-      }
-      if (safe>width*(height-1) && y === 1) {
-        continue;
+        }
+        if (safe > width * (height - 1) && y === 1) {
+          continue;
+        }
+
+        if (safe % height === 0 && x === -1) {
+          continue;
+        }
+        if ((safe % height) === (height - 1) && x === 1) {
+          continue;
+        }
+
+        var index = safe + x * height + y;
+        safeList.push(index);
       }
 
-      if (safe % height === 0 && x === -1) {
-        continue;
-      }
-      if ((safe % height) === (height - 1) && x === 1) {
-        continue;
-      }
-    
-      var index = safe + x* height + y ;
-      safeList.push(index); 
     }
-
-  }
 
 
 
@@ -432,15 +419,15 @@ function updateTable(){
     // 填充雷
     _.forEach(mineNum, function (n, i) {
       var mine = { type: "mine", number: i + 1 };
-      mineList = _.concat(mineList, _.fill(new Array(n), mine));      
+      mineList = _.concat(mineList, _.fill(new Array(n), mine));
     });
 
     // 填充空格
     var space = { type: "space", number: 0 };
-  
+
     mineList = _.concat(
       mineList,
-      _.fill(new Array(num - mineList.length-safeList.length), space)
+      _.fill(new Array(num - mineList.length - safeList.length), space)
     );
 
     // 打乱顺序
@@ -448,12 +435,12 @@ function updateTable(){
       return Math.random();
     });
     //保证空白
-    for (var n = 0; n < safeList.length; n++) { 
+    for (var n = 0; n < safeList.length; n++) {
 
-      mineList.splice(safeList[n],0,space);      
+      mineList.splice(safeList[n], 0, space);
     }
-   
-    
+
+
 
 
 
@@ -510,8 +497,8 @@ function updateTable(){
             <div class="block-flag"></div>
             </div>`);
       $blocks.append($block);
-      m.$block=$block;
-      m.blockHtml=(`
+      m.$block = $block;
+      m.blockHtml = (`
        <div class="block-${m.type} num-${m.number}">
         ${m.number ? m.number : ""}
        </div>
@@ -520,7 +507,7 @@ function updateTable(){
         var index = $(e.target.parentElement).attr("index");
         blockClick(parseInt(index), version);
         updateInfo();
-       // updateBlock();
+        // updateBlock();
       });
       if (m.y === height - 1) {
         $blocks = $(`<div class="blocks"></div>`);
