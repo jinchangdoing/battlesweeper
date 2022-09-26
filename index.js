@@ -84,7 +84,6 @@
     //扣除标记数
     if (mine.flag) {
       gameInfo.mineFlaged[mine.flag - 1]--;
-      updateInfo();
     }
 
     // 第一次点击必白
@@ -158,7 +157,7 @@
       playerInfo.exp += gameInfo.mineExp[mine.number - 1];
     }
     // 更新展示数据
-    _.debounce(updateInfo, 50);
+      updateInfo();
   }
 
   // 消息提示
