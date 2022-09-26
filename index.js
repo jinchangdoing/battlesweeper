@@ -11,7 +11,6 @@
   var expTemp = [];
   var mineProportion = [0.3, 0.2, 0.165, 0.135, 0.105, 0.09, 0.06, 0.04, 0.015];
   var expMultiplier = [0.5, 0.3, 0.75, 0.875, 0.96875, 1, 1, 1, 1];
-  var firstFlag = true;
   var forceWhiteCount = 0;
   var mineList = [];
   var $app = $("#app");
@@ -87,18 +86,17 @@
     }
 
     // 第一次点击必白
-    if ((mine.type !== "space" || mine.number !== 0) && firstFlag) {
+    if ((mine.type !== "space" || mine.number !== 0) && forceWhiteCount == 0) {
       initData();
       initView();
       forceWhiteCount++;
-      if (forceWhiteCount < 500) {
+      if (forceWhiteCount < 100) {
         setTimeout(function () {
           blockClick(i, ver);
         }, 0);
         return;
       }
     }
-    firstFlag = false;
 
     // 打开雷
     var $block = $(`.block[index="${i}"]`);
@@ -338,7 +336,7 @@
     playerInfo = JSON.parse(JSON.stringify(data[difficulty].playerInfo));
     gameInfo = JSON.parse(JSON.stringify(data[difficulty].gameInfo));
     mineList = [];
-    firstFlag = true;
+    forceWhiteCount = 0;
     var width = gameInfo.width;
     var height = gameInfo.height;
     var num = width * height;
