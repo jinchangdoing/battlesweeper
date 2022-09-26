@@ -18,7 +18,7 @@ window.data={
             128,
             256
          ],
-         "mineNumTotal":60,
+         "mineNumTotal":48,
          "mineFlaged":[
             0,
             0,
@@ -51,7 +51,7 @@ window.data={
             128,
             256
          ],
-         "mineNumTotal":80,
+         "mineNumTotal":60,
          "mineFlaged":[
             0,
             0,
