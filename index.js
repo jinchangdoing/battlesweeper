@@ -90,7 +90,7 @@
       initData();
       initView();
       forceWhiteCount++;
-      if (forceWhiteCount < 100) {
+      if (forceWhiteCount < difficulty === 'custom' ? 100 : 500) {
         setTimeout(function () {
           blockClick(i, ver);
         }, 0);
