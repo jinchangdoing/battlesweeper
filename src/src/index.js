@@ -463,7 +463,7 @@ function init(diff) {
   time = 0;
   if (inter) clearInterval(inter);
   inter = setInterval(function () {
-    time++;
+    time ++;
     var $time = document.querySelector(".time");
     if ($time) $time.innerText = time;
   }, 1000);

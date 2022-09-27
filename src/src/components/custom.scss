@@ -58,3 +58,33 @@
 .custom-submit {
   margin-right: 8px;
 }
+
+.custom-radio-group {
+  display: flex;
+  justify-content: flex-start;
+
+  .custom-radio {
+    position: relative;
+    margin-right: 2px;
+    width: 50px;
+    height: 36px;
+    line-height: 36px;
+    border: 0;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.25s;
+    color: #606060;
+
+    &[data-check="1"] {
+      color: #3197ee;
+      background: #f6f6f6;
+      outline: none;
+    }
+
+    &:hover {
+      color: #3197ee;
+      background: #f6f6f6;
+      outline: none;
+    }
+  }
+}

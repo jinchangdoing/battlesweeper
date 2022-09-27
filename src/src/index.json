@@ -63,5 +63,18 @@
       "mineNumTotal": 300,
       "mineFlaged": [0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
+  },
+  "custom": {
+    "playerInfo": {
+      "hp": 1,
+      "exp": 0
+    },
+    "gameInfo": {
+      "width": 30,
+      "height": 30,
+      "mineExp": [1, 2, 4, 8, 16, 32, 64, 128, 256],
+      "mineNumTotal": 300,
+      "mineFlaged": [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
   }
 }

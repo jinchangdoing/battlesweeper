@@ -1,28 +1,60 @@
 import $ from "jquery";
 import "./custom.scss";
 import { message } from "./message.js";
+import data from "../index.json";
 
 var $wrapper = $(`<div class="custom-warpper">
   <div class="custom-message" style="top: -100px; opacity: 0;">
+    <span>难度:</span>
+    <div class="custom-radio-group">
+      <div name="easy" class="custom-radio" data-check="1">简单</div>
+      <div name="normal" class="custom-radio">普通</div>
+      <div name="hard" class="custom-radio">困难</div>
+      <div name="lunatic" class="custom-radio">疯狂</div>
+      <div name="extra" class="custom-radio">鱼</div>
+      <div name="custom" class="custom-radio">自制</div>
+    </div>
     <span>行:</span>
-    <input class="custom-input custom-row" value="30"   oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
+    <input class="custom-input custom-row" value="30" disabled  oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
     <span>列:</span>
-    <input class="custom-input custom-column" value="30""  oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
+    <input class="custom-input custom-column" value="30" disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
     <span>雷数:</span>
-    <input class="custom-input custom-mine" value="300" oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
+    <input class="custom-input custom-mine" value="300" disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
     <span>HP:</span>
-    <input class="custom-input custom-hp" value="30"   oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
+    <input class="custom-input custom-hp" value="30"  disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
     <span></span>
     <div class="custom-button-group">
     </div>  
   </div>
 </div>`);
 var $content = $wrapper.find(".custom-message");
+var $radios = $wrapper.find(".custom-radio");
 var $buttons = $wrapper.find(".custom-button-group");
+var $inputs = $wrapper.find(".custom-input");
 var $hp = $content.find(".custom-hp");
 var $mine = $content.find(".custom-mine");
 var $row = $content.find(".custom-row");
 var $column = $content.find(".custom-column");
+
+$radios.on("click", function (e) {
+  var $radio = $(e.currentTarget);
+  var name = $radio.attr("name");
+  var playerInfo = data[name] && data[name].playerInfo;
+  var gameInfo = data[name] && data[name].gameInfo;
+
+  $hp.val(playerInfo && playerInfo.hp);
+  $mine.val(gameInfo && gameInfo.mineNumTotal);
+  $row.val(gameInfo && gameInfo.height);
+  $column.val(gameInfo && gameInfo.width);
+
+  $radios.attr("data-check", "0");
+  $radio.attr("data-check", "1");
+  if (name === 'custom') {
+    $inputs.removeAttr('disabled');
+  } else {
+    $inputs.attr('disabled', 'true');
+  }
+});
 
 function verify() {
   if (!$hp.val() || !$mine.val() || !$row.val() || !$column.val()) {
