@@ -3,13 +3,13 @@ import "./index.scss";
 import $ from "jquery";
 import _ from "lodash";
 import data from "./index.json";
-import custom from "./src/components/custom";
-import shinpei from "./src/components/shinpei";
-import { message } from "./src/components/message";
+import custom from "./components/custom";
+import shinpei from "./components/shinpei";
+import { message } from "./components/message";
 
 custom.init();
 
-var codeVersion = "版本:0.9.2";
+var codeVersion = "版本:0.9.3";
 var blockTemp = [];
 var excuteNum = 0;
 var version = 1;
@@ -22,8 +22,10 @@ var playerInfo;
 var gameInfo;
 var mineNum = [];
 var expTemp = [];
-var mineProportion = [0.3, 0.2, 0.165, 0.135, 0.105, 0.09, 0.06, 0.04, 0.015];
-var expMultiplier = [0.5, 0.3, 0.75, 0.875, 0.96875, 1, 1, 1, 1];
+var mineExp = [];
+var mineFlaged = [];
+var mineProportion = [];
+var expMultiplier = [];
 var mineList = [];
 var $actions = $(".actions");
 var $box = $(".box");
@@ -32,7 +34,10 @@ var $info = $(".info");
 var $main = $(".main");
 var $toolbar = $(".toolbar");
 var $toolbarWrapper = $(".toolbar-wrapper");
+
 var $codeVersion = document.querySelector(".version");
+
+
 //根据雷自动调节经验需求
 function caculateExpreuire() {
   expTemp[0] = 0;
@@ -40,22 +45,23 @@ function caculateExpreuire() {
   //先根据雷数量设置极限升级经验
   for (var i = 0; i < 10; i++) {
     for (var j = 0; j <= i; j++) {
-      expTemp[i + 1] = mineNum[j] * gameInfo.mineExp[j];
+      expTemp[i + 1] = mineNum[j] * mineExp[j];
       if (expTemp[i + 1] === 0) {
         expTemp[i] = 999999;
       }
     }
     expTemp[i + 1] += expTemp[i];
-    //expRequire[i+1]=expRequire[i+1]*expMultiplier[i];
+
   }
 
   for (var k = 0; k < 9; k++) {
     expRequire[k + 1] =
       expTemp[k] +
-      parseInt(mineNum[k] * gameInfo.mineExp[k] * expMultiplier[k]);
+      parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
   }
   expRequire[9] = 999999;
 }
+//根据当前经验计算玩家等级
 function getPlayerLevel() {
   var level = 0;
   _.forEach(expRequire, function (exp, i) {
@@ -65,6 +71,7 @@ function getPlayerLevel() {
   });
   return level;
 }
+//根据当前经验计算下一级所需经验
 function getNextLevelExp() {
   var nextExp = 0;
   nextExp = expRequire[getPlayerLevel()] - playerInfo.exp;
@@ -78,21 +85,32 @@ function blockClick(i, ver) {
   var height = gameInfo.height;
   var mine = mineList[i];
 
+
+
   // 校验
   if (ver && ver != version) {
+
     return;
   }
+
   if (!mine) {
     return;
   }
+
   if (mine.clicked) {
+
     return;
   }
+  if (mine.flag > getPlayerLevel()) {
+
+    return;
+  }
+
   // 标记已点击
   mine.clicked = true;
   //扣除标记数
   if (mine.flag) {
-    gameInfo.mineFlaged[mine.flag - 1]--;
+    mineFlaged[mine.flag - 1]--;
   }
 
   if ((mine.type !== "space" || mine.number !== 0) && firstFlag) {
@@ -107,6 +125,9 @@ function blockClick(i, ver) {
 
   blockTemp.push(mine);
   // mine.$block.html(mine.blockHtml);
+
+
+
 
   // 点击到空白时 点击周围八格
   if (mine.type === "space" && mine.number === 0) {
@@ -132,6 +153,7 @@ function blockClick(i, ver) {
 
     return;
   }
+
 
   // 点击到雷时 扣除血量
   if (mine.type === "mine" && mine.number > getPlayerLevel()) {
@@ -161,12 +183,30 @@ function blockClick(i, ver) {
   // 点击到雷时 增加经验,扣除雷数
   if (mine.type === "mine") {
     mineNum[mine.number - 1]--;
-    playerInfo.exp += gameInfo.mineExp[mine.number - 1];
+    playerInfo.exp += mineExp[mine.number - 1];
+  }
+
+
+  if (_.reduce(mineNum, function (sum, n) {
+    return sum + n;
+  }, 0) === 0) {
+    gameWin();
   }
   if (excuteNum === 0) {
     updateTable();
   }
 }
+//点击相应数字时挖开
+
+//挖开所有标记等级为x格子
+function clearFlaggedMine() {
+
+
+
+}
+
+
+
 function updateTable() {
   _.forEach(blockTemp, function (m) {
     m.$block.html(m.blockHtml);
@@ -197,7 +237,22 @@ function gameOver() {
     }, 1 * m.i);
   });
 }
-
+function gameWin() {
+  message("您就是挖雷至尊？");
+  // 结束计时器
+  if (inter) {
+    clearInterval(inter);
+  }
+  // 取消点击事件
+  $(`.block > .block-mask`).each(function (i, d) {
+    $(d).css("pointer-events", "none");
+  });
+  ////////////////// 
+  //胜利相关动画
+  //  
+  //
+  //
+}
 //更新显示数据面板
 function updateInfo() {
   $info.html(`
@@ -228,15 +283,15 @@ function updateInfo() {
                   </tr>
                   <tr>
                       <td>标记雷数</td>
-                      <td>${gameInfo.mineFlaged[0]}</td>
-                      <td>${gameInfo.mineFlaged[1]}</td>
-                      <td>${gameInfo.mineFlaged[2]}</td>
-                      <td>${gameInfo.mineFlaged[3]}</td>
-                      <td>${gameInfo.mineFlaged[4]}</td>
-                      <td>${gameInfo.mineFlaged[5]}</td>
-                      <td>${gameInfo.mineFlaged[6]}</td>
-                      <td>${gameInfo.mineFlaged[7]}</td>
-                      <td>${gameInfo.mineFlaged[8]}</td>   
+                      <td>${mineFlaged[0]}</td>
+                      <td>${mineFlaged[1]}</td>
+                      <td>${mineFlaged[2]}</td>
+                      <td>${mineFlaged[3]}</td>
+                      <td>${mineFlaged[4]}</td>
+                      <td>${mineFlaged[5]}</td>
+                      <td>${mineFlaged[6]}</td>
+                      <td>${mineFlaged[7]}</td>
+                      <td>${mineFlaged[8]}</td>   
                   </tr>
                   <tr>
                       <th>难度</th> 
@@ -258,8 +313,13 @@ function updateInfo() {
 
 // 数据初始化
 function initData(safe) {
-  playerInfo = JSON.parse(JSON.stringify(data[difficulty].playerInfo));
-  gameInfo = JSON.parse(JSON.stringify(data[difficulty].gameInfo));
+
+  playerInfo = data[difficulty].playerInfo;
+  gameInfo = data[difficulty].gameInfo;
+  mineExp = data.mineExp;
+  mineFlaged = data.mineFlaged;
+  expMultiplier = data.expMultiplier;
+  mineProportion = data.mineProportion;
   mineList = [];
   var width = gameInfo.width;
   var height = gameInfo.height;
@@ -354,6 +414,7 @@ function initView() {
     if (m.y === 0) {
       $box.append($blocks);
     }
+    //
     var $block = $(`<div class="block" index="${i}">
               <div class="block-mask purple-body"></div>
               <div class="block-show red-body"></div>
@@ -362,16 +423,56 @@ function initView() {
     $blocks.append($block);
     m.$block = $block;
     m.blockHtml = `
-         <div class="block-${m.type} num-${m.number}">
+         <div class="block-${m.type}" block-num="${m.number}">
           ${m.number ? m.number : ""}
          </div>
          `;
-    $block.find(".block-mask").on("click", function (e) {
-      var index = $(e.target.parentElement).attr("index");
+
+    $block.on("click", function (e) {
+
+      var index = $(this).attr("index");
       blockClick(parseInt(index), version);
+      var mine = mineList[index];
+      if (mine.type === "space" && mine.number <= getPlayerLevel()) {
+
+
+        for (var n = 0; n < 9; n++) {
+          var x = parseInt(n / 3) - 1;
+          var y = parseInt(n % 3) - 1;
+          if (i % height === 0 && x === -1) {
+            continue;
+          }
+          if (i % height === height - 1 && x === 1) {
+            continue;
+          }
+          if (x === 0 && y === 1) {
+            continue;
+          }
+
+          if (mine.clicked !== false)
+            blockClick(i + x + y * height, version);
+        }
+      }
       updateInfo();
       // updateBlock();
     });
+
+    var $clearAllbutton = $("table:first-child tr");
+
+    $clearAllbutton.on("click", function (e) {
+
+      console.log($clearAllbutton);
+    });
+
+
+
+
+
+
+
+
+
+
     if (m.y === height - 1) {
       $blocks = $(`<div class="blocks"></div>`);
     }
@@ -410,7 +511,7 @@ function initView() {
     var mine = mineList[index];
     // 减去原有标记的等级
     if (mine.flag) {
-      gameInfo.mineFlaged[mine.flag - 1]--;
+      mineFlaged[mine.flag - 1]--;
       updateInfo();
     }
     // 取消标记等级
@@ -430,12 +531,12 @@ function initView() {
     var mine = mineList[index];
     // 减去原有标记的等级
     if (mine.flag) {
-      gameInfo.mineFlaged[mine.flag - 1]--;
+      mineFlaged[mine.flag - 1]--;
     }
     // 标记新等级
     mine.flag = flagNum;
     $blockFlag.html(flagNum ? flagNum : "");
-    gameInfo.mineFlaged[flagNum - 1]++;
+    mineFlaged[flagNum - 1]++;
     updateInfo();
   });
   // 展示数据
@@ -459,6 +560,7 @@ function init(diff) {
   $codeVersion.innerText = codeVersion;
   initData();
   caculateExpreuire();
+
   initView();
   time = 0;
   if (inter) clearInterval(inter);
