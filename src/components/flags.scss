@@ -1,0 +1,75 @@
+@font-face {
+  font-family: "站酷高端黑 Regular";
+  font-weight: 400;
+  src: url("//at.alicdn.com/wf/webfont/0I0xZnAcc5er/TUOj8j0hgvUA88QCnsdCN.woff2");
+  font-display: swap;
+}
+
+.flags {
+  pointer-events: none;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  bottom: 20px;
+  width: 100%;
+
+  .flag {
+    pointer-events: auto;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100px;
+    height: 40px;
+    line-height: 40px;
+    user-select: none;
+
+    .fa-flag {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      font-size: 30px;
+      cursor: pointer;
+
+      .flag-name {
+        position: absolute;
+        top: 10px;
+        font-size: 14px;
+        font-family: "站酷高端黑 Regular", sans-serif;
+      }
+    }
+
+    .flag-x {
+      position: relative;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .flag-data {
+      position: relative;
+      color: #543654;
+      font-size: 28px;
+    }
+
+    $color: (1, #0899eb), (2, #ff2db2), (3, #6de0b0), (4, #0899eb), (5, #ffa72d),
+      (6, #318c66), (7, #a837ed), (8, #0ffe9a), (9, #609834);
+
+    @each $i, $c in $color {
+      &[data-name="#{$i}"] .fa-flag {
+        .flag-name {
+          color: $c;
+        }
+      }
+
+      &[data-name="#{$i}"] .fa-flag:hover {
+        color: $c;
+
+        .flag-name {
+          color: #fff;
+        }
+      }
+    }
+  }
+}

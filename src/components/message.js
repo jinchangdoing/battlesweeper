@@ -1,6 +1,6 @@
 import './message.scss';
 import $ from 'jquery';
-var $app = $('app');
+var $app = $('#app');
 
 export function message(msg) {
     var $message = $(`<div class="message" style="top: -100px; opacity: 0;">

@@ -6,6 +6,7 @@ import data from "./index.json";
 import custom from "./components/custom";
 import shinpei from "./components/shinpei";
 import { message } from "./components/message";
+import flags from "./components/flags";
 
 custom.init();
 
@@ -309,15 +310,18 @@ function updateInfo() {
                   </tr>    
               </table>
               `);
+  flags.update(mineFlaged);
+
+
+
 }
 
 // 数据初始化
 function initData(safe) {
-
-  playerInfo = data[difficulty].playerInfo;
-  gameInfo = data[difficulty].gameInfo;
+  playerInfo = JSON.parse(JSON.stringify(data[difficulty].playerInfo));
+  gameInfo = JSON.parse(JSON.stringify(data[difficulty].gameInfo));
   mineExp = data.mineExp;
-  mineFlaged = data.mineFlaged;
+  mineFlaged = JSON.parse(JSON.stringify(data.mineFlaged));
   expMultiplier = data.expMultiplier;
   mineProportion = data.mineProportion;
   mineList = [];
@@ -409,6 +413,26 @@ function initData(safe) {
 function initView() {
   var height = gameInfo.height;
   var $blocks = $(`<div class="blocks"></div>`);
+  var $flags = flags.create({
+    callback() {
+      console.log(12);
+      var $this = $(this);
+        var playerLevel = getPlayerLevel();
+        var buttonNum = parseInt($this.attr('data-name'));
+        console.log(buttonNum);
+        _.forEach(mineList, function (m, i) {
+          if (parseInt(m.flag) === buttonNum && m.flag <= playerLevel)
+            blockClick(i, version);
+
+        });
+
+        updateInfo();
+
+
+    }
+  });
+  $flags.remove();
+  $main.append($flags);
   $box.html("");
   _.forEach(mineList, function (m, i) {
     if (m.y === 0) {
@@ -453,16 +477,32 @@ function initView() {
             blockClick(i + x + y * height, version);
         }
       }
+
+
+
+      flags.ondblclick = function (e) {
+        
+      };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       updateInfo();
       // updateBlock();
     });
 
-    var $clearAllbutton = $("table:first-child tr");
 
-    $clearAllbutton.on("click", function (e) {
-
-      console.log($clearAllbutton);
-    });
 
 
 
@@ -558,9 +598,9 @@ function init(diff) {
   $actions.append(createButtonZoom("down", "缩小"));
   $actions.append(createButtonCustom("自定义"));
   $codeVersion.innerText = codeVersion;
+
   initData();
   caculateExpreuire();
-
   initView();
   time = 0;
   if (inter) clearInterval(inter);
