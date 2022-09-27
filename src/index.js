@@ -1,9 +1,13 @@
 import "./index.scss";
-import "./shenpei/shinpei.scss";
 
 import $ from "jquery";
 import _ from "lodash";
 import data from "./index.json";
+import custom from "./src/components/custom";
+import shinpei from "./src/components/shinpei";
+import { message } from "./src/components/message";
+
+custom.init();
 
 var codeVersion = "版本:0.9.2";
 var blockTemp = [];
@@ -21,7 +25,6 @@ var expTemp = [];
 var mineProportion = [0.3, 0.2, 0.165, 0.135, 0.105, 0.09, 0.06, 0.04, 0.015];
 var expMultiplier = [0.5, 0.3, 0.75, 0.875, 0.96875, 1, 1, 1, 1];
 var mineList = [];
-var $app = $("#app");
 var $actions = $(".actions");
 var $box = $(".box");
 var $boxWrapper = $(".box-wrapper");
@@ -169,96 +172,6 @@ function updateTable() {
     m.$block.html(m.blockHtml);
   });
   blockTemp = [];
-}
-// 消息提示
-function message(msg) {
-  var $message = $(`<div class="message" style="top: -100px; opacity: 0;">
-              <div class="message-content">
-                  ${msg}
-              </div>
-          </div>`);
-  $app.append($message);
-  setTimeout(function () {
-    $message.css("top", "140px");
-    $message.css("opacity", "1");
-  }, 0);
-  setTimeout(function () {
-    $message.css("top", "-100px");
-    $message.css("opacity", "0");
-  }, 2000);
-  setTimeout(function () {
-    $app.remove($message);
-  }, 3000);
-}
-
-function messageCustom() {
-  var $messageWrapper = $(`
-              <div class="custom-warpper">
-                  <div class="custom-message" style="top: -100px; opacity: 0;">
-                      <span>行:</span>
-                      <input class="custom-input custom-row" value="30"   oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
-                      <span>列:</span>
-                      <input class="custom-input custom-column" value="30""  oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
-                      <span>雷数:</span>
-                      <input class="custom-input custom-mine" value="300" oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
-                      <span>HP:</span>
-                      <input class="custom-input custom-hp" value="30"   oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
-                      <span></span>
-                      <div>
-                          <button class="prime-button custom-submit">确定</button>
-                          <button class="default-button custom-cancel">关闭</button>
-                      </div>  
-                  </div>)
-              </div>`);
-  $app.append($messageWrapper);
-  var $message = $messageWrapper.find(".custom-message");
-  var $hp = $message.find(".custom-hp");
-  var $mine = $message.find(".custom-mine");
-  var $row = $message.find(".custom-row");
-  var $column = $message.find(".custom-column");
-  $messageWrapper.find(".custom-submit").on("click", function () {
-    if (!$hp.val() || !$mine.val() || !$row.val() || !$column.val()) {
-      return message("输入不合法");
-    }
-    if ($row.val() < 5 || $row.val() > 100) return message("行数为5-100");
-    if ($column.val() < 5 || $column.val() > 100) return message("列数为5-100");
-    if ($mine.val() > $row.val() * $column.val() * 0.4)
-      return message("雷数应小于总棋盘数的40%！");
-    if ($mine.val() < 10) return message("雷数至少为10");
-
-    window.data.custom = {
-      playerInfo: {
-        hp: $hp.val(),
-        exp: 0,
-      },
-      gameInfo: {
-        width: $column.val(),
-        height: $row.val(),
-        mineExp: [1, 2, 4, 8, 16, 32, 64, 128, 256],
-        mineNumTotal: $mine.val(),
-        mineFlaged: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      },
-    };
-    init("custom");
-    $message.css("top", "-100px");
-    $message.css("opacity", "0");
-    setTimeout(function () {
-      $messageWrapper.remove();
-    }, 500);
-  });
-
-  $messageWrapper.find(".custom-cancel").on("click", function () {
-    $message.css("top", "-100px");
-    $message.css("opacity", "0");
-    setTimeout(function () {
-      $messageWrapper.remove();
-    }, 500);
-  });
-
-  setTimeout(function () {
-    $message.css("top", "240px");
-    $message.css("opacity", "1");
-  }, 0);
 }
 
 function gameOver() {
@@ -567,36 +480,23 @@ function init(diff) {
   }
 
   function createButtonReset() {
-    var $button = $(`
-                  <div class="shinpei">
-                      <div class="shinpei-01"></div>
-                      <div class="shinpei-02"></div>
-                      <div class="shinpei-03"></div>
-                  </div>`);
-
-    $button.on("click", function () {
-      init(difficulty);
-      $box.css("transition", "0s");
-      $box.css("transform", "rotateY(0deg)");
-
-      $box.css("transition", "0.25s");
-      $box.css("transform", "rotateY(90deg)");
-
-      setTimeout(function () {
-        $box.css("transition", "0s");
-        $box.css("transform", "rotateY(-90deg)");
-        $box.css("transition", "0.25s");
-        $box.css("transform", "rotateY(0deg)");
-      }, 250);
+    return shinpei.create({
+      callback() {
+        init(difficulty);
+      },
     });
-    return $button;
   }
   function createButtonCustom(text) {
     var $button = $(
       `<button class="actions-button purple-body">${text}</button>`
     );
     $button.on("click", function () {
-      messageCustom();
+      custom.open({
+        callback(d) {
+          data.custom = d;
+          init("custom");
+        },
+      });
     });
     return $button;
   }

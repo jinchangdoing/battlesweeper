@@ -1,0 +1,15 @@
+.message {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  transition: 0.5s;
+  width: calc(100% - 300px);
+
+  & > .message-content {
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 10px #efefef;
+    border-radius: 4px;
+  }
+}
