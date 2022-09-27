@@ -71,8 +71,8 @@ window.data={
          "exp":0
       },
       "gameInfo":{
-         "width":14,
-         "height":43,
+         "width":20,
+         "height":30,
          "mineExp":[
             1,
             2,
@@ -150,7 +150,7 @@ window.data={
             128,
             256
          ],
-         "mineNumTotal":274,
+         "mineNumTotal":300,
          "mineFlaged":[
             0,
             0,

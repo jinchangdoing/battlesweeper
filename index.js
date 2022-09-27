@@ -1,4 +1,5 @@
 (function () {
+  var codeVersion ='版本:0.9.2';
   var blockTemp = [];
   var excuteNum = 0;
   var version = 1;
@@ -12,9 +13,10 @@
   var mineNum = [];
   var expRequire = [];
   var expTemp = [];
+  var mineExp=[1,2,4,8,16,32,64,128,256];
+  var mineFlaged=[0,0,0,0,0,0,0,0,0]
   var mineProportion = [0.3, 0.2, 0.165, 0.135, 0.105, 0.09, 0.06, 0.04, 0.015];
   var expMultiplier = [0.5, 0.3, 0.75, 0.875, 0.96875, 1, 1, 1, 1];
-  var forceWhiteCount = 0;
   var mineList = [];
   var $app = $("#app");
   var $actions = $(".actions");
@@ -24,7 +26,7 @@
   var $main = $(".main");
   var $toolbar = $(".toolbar");
   var $toolbarWrapper = $(".toolbar-wrapper");
-
+  var $codeVersion =document.querySelector(".version");
   //根据雷自动调节经验需求\
   function caculateExpreuire() {
     expTemp[0] = 0;
@@ -479,7 +481,6 @@
         }
       }
     });
-    console.log(1)
   }
 
   // 页面初始化
@@ -595,7 +596,7 @@
     $actions.append(createButtonZoom("up", "放大"));
     $actions.append(createButtonZoom("down", "缩小"));
     $actions.append(createButtonCustom("自定义"));
-
+    $codeVersion.innerText=codeVersion;
     initData();
     caculateExpreuire();
     initView();
