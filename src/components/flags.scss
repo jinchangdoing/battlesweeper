@@ -5,69 +5,100 @@
   font-display: swap;
 }
 
-.flags {
+.float-panel {
   pointer-events: none;
   position: absolute;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   left: 0;
   bottom: 20px;
   width: 100%;
+  height: 90px;
+}
 
-  .flag {
+.float-items {
+  position: relative;
+  display: flex;
+  justify-content: center;
+
+  .float-item {
     pointer-events: auto;
     position: relative;
     display: flex;
     flex-direction: row;
-    width: 100px;
+    margin-right: 60px;
+    width: 40px;
     height: 40px;
     line-height: 40px;
     user-select: none;
+    border-radius: 50%;
 
-    .fa-flag {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 40px;
-      height: 40px;
+    .float-item-icon {
+      position: absolute;
+      width: 100%;
+      height: 100%;
       font-size: 30px;
       cursor: pointer;
-
-      .flag-name {
-        position: absolute;
-        top: 10px;
-        font-size: 14px;
-        font-family: "站酷高端黑 Regular", sans-serif;
-      }
+      transition: color 0.2s;
     }
 
-    .flag-x {
-      position: relative;
-      color: #fff;
-      font-size: 12px;
-    }
-
-    .flag-data {
-      position: relative;
-      color: #543654;
+    .float-item-name {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 2px;
       font-size: 28px;
+      text-align: center;
+      font-family: "站酷高端黑 Regular", sans-serif;
+      transition: color 0.2s;
+      color: #a8a8a8;
+    }
+
+    .float-item-data {
+      pointer-events: none;
+      position: absolute;
+      left: 50px;
+      color: #543654;
+      font-size: 24px;
+    }
+
+    .float-item-back-01 {
+      pointer-events: none;
+      position: absolute;
+      background: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+    }
+
+    .float-item-back-02 {
+      pointer-events: none;
+      position: absolute;
+      background: #fff;
+      top: 8px;
+      width: 90px;
+      height: 24px;
+      border-radius: 30px;
+      box-shadow: 0 0 2px #fff;
     }
 
     $color: (1, #0899eb), (2, #ff2db2), (3, #6de0b0), (4, #0899eb), (5, #ffa72d),
       (6, #318c66), (7, #a837ed), (8, #0ffe9a), (9, #609834);
 
     @each $i, $c in $color {
-      &[data-name="#{$i}"] .fa-flag {
-        .flag-name {
-          color: $c;
+      &.float-item-flag[data-name="#{$i}"] {
+        color: $c;
+        .float-item-name {
+          color: #a8a8a8;
         }
       }
 
-      &[data-name="#{$i}"] .fa-flag:hover {
-        color: $c;
-
-        .flag-name {
-          color: #fff;
+      &.float-item-flag[data-name="#{$i}"]:hover {
+        background: $c;
+        color: #fff;
+        .float-item-back-01 {
+          background: $c;
         }
       }
     }

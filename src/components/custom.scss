@@ -1,3 +1,25 @@
+.game-start {
+  position: relative;
+  width: 300px;
+  height: 80px;
+  border-radius: 4px;
+  background: #50a6fc;
+  color: #fff;
+  overflow: hidden;
+  top: 0;
+  transition: 0.2s;
+  font-size: 26px;
+  text-align: center;
+  line-height: 80px;
+  cursor: pointer;
+}
+
+.game-start:hover {
+  top: -4px;
+  font-size: 28px;
+  box-shadow: 0 0 5px #12fe21;
+}
+
 .custom {
   height: 300px;
 }

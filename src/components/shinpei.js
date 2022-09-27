@@ -4,7 +4,7 @@ import './shinpei.scss';
 var $box = $(".box");
 
 export default {
-  create({callback}) {
+  init({callback, selector}) {
     var $button = $(`<div class="shinpei">
         <div class="shinpei-01"></div>
         <div class="shinpei-02"></div>
@@ -25,6 +25,6 @@ export default {
         $box.css("transform", "rotateY(0deg)");
       }, 250);
     });
-    return $button;
+    $(selector).append($button);
   },
 };

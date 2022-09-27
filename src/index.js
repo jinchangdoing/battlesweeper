@@ -5,12 +5,11 @@ import _ from "lodash";
 import data from "./index.json";
 import custom from "./components/custom";
 import shinpei from "./components/shinpei";
+import actions from "./components/actions";
 import { message } from "./components/message";
 import flags from "./components/flags";
 
-custom.init();
-
-var codeVersion = "版本:0.9.3";
+var codeVersion = "版本:0.9.4";
 var blockTemp = [];
 var excuteNum = 0;
 var version = 1;
@@ -28,16 +27,13 @@ var mineFlaged = [];
 var mineProportion = [];
 var expMultiplier = [];
 var mineList = [];
-var $actions = $(".actions");
 var $box = $(".box");
 var $boxWrapper = $(".box-wrapper");
 var $info = $(".info");
 var $main = $(".main");
 var $toolbar = $(".toolbar");
 var $toolbarWrapper = $(".toolbar-wrapper");
-
-var $codeVersion = document.querySelector(".version");
-
+var $codeVersion = $(".version");
 
 //根据雷自动调节经验需求
 function caculateExpreuire() {
@@ -52,13 +48,11 @@ function caculateExpreuire() {
       }
     }
     expTemp[i + 1] += expTemp[i];
-
   }
 
   for (var k = 0; k < 9; k++) {
     expRequire[k + 1] =
-      expTemp[k] +
-      parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
+      expTemp[k] + parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
   }
   expRequire[9] = 999999;
 }
@@ -86,11 +80,8 @@ function blockClick(i, ver) {
   var height = gameInfo.height;
   var mine = mineList[i];
 
-
-
   // 校验
   if (ver && ver != version) {
-
     return;
   }
 
@@ -99,11 +90,9 @@ function blockClick(i, ver) {
   }
 
   if (mine.clicked) {
-
     return;
   }
   if (mine.flag > getPlayerLevel()) {
-
     return;
   }
 
@@ -126,9 +115,6 @@ function blockClick(i, ver) {
 
   blockTemp.push(mine);
   // mine.$block.html(mine.blockHtml);
-
-
-
 
   // 点击到空白时 点击周围八格
   if (mine.type === "space" && mine.number === 0) {
@@ -154,7 +140,6 @@ function blockClick(i, ver) {
 
     return;
   }
-
 
   // 点击到雷时 扣除血量
   if (mine.type === "mine" && mine.number > getPlayerLevel()) {
@@ -187,10 +172,15 @@ function blockClick(i, ver) {
     playerInfo.exp += mineExp[mine.number - 1];
   }
 
-
-  if (_.reduce(mineNum, function (sum, n) {
-    return sum + n;
-  }, 0) === 0) {
+  if (
+    _.reduce(
+      mineNum,
+      function (sum, n) {
+        return sum + n;
+      },
+      0
+    ) === 0
+  ) {
     gameWin();
   }
   if (excuteNum === 0) {
@@ -198,15 +188,6 @@ function blockClick(i, ver) {
   }
 }
 //点击相应数字时挖开
-
-//挖开所有标记等级为x格子
-function clearFlaggedMine() {
-
-
-
-}
-
-
 
 function updateTable() {
   _.forEach(blockTemp, function (m) {
@@ -222,9 +203,8 @@ function gameOver() {
     clearInterval(inter);
   }
   // 取消点击事件
-  $(`.block > .block-mask`).each(function (i, d) {
-    $(d).css("pointer-events", "none");
-  });
+  $(`.block`).css("pointer-events", "none");
+
   // 展示雷的位置
   _.filter(mineList, function (m) {
     return m.type === "mine";
@@ -248,9 +228,9 @@ function gameWin() {
   $(`.block > .block-mask`).each(function (i, d) {
     $(d).css("pointer-events", "none");
   });
-  ////////////////// 
+  //////////////////
   //胜利相关动画
-  //  
+  //
   //
   //
 }
@@ -310,10 +290,7 @@ function updateInfo() {
                   </tr>    
               </table>
               `);
-  flags.update(mineFlaged);
-
-
-
+  flags.update(mineFlaged, mineNum);
 }
 
 // 数据初始化
@@ -413,26 +390,6 @@ function initData(safe) {
 function initView() {
   var height = gameInfo.height;
   var $blocks = $(`<div class="blocks"></div>`);
-  var $flags = flags.create({
-    callback() {
-      console.log(12);
-      var $this = $(this);
-        var playerLevel = getPlayerLevel();
-        var buttonNum = parseInt($this.attr('data-name'));
-        console.log(buttonNum);
-        _.forEach(mineList, function (m, i) {
-          if (parseInt(m.flag) === buttonNum && m.flag <= playerLevel)
-            blockClick(i, version);
-
-        });
-
-        updateInfo();
-
-
-    }
-  });
-  $flags.remove();
-  $main.append($flags);
   $box.html("");
   _.forEach(mineList, function (m, i) {
     if (m.y === 0) {
@@ -453,13 +410,10 @@ function initView() {
          `;
 
     $block.on("click", function (e) {
-
       var index = $(this).attr("index");
       blockClick(parseInt(index), version);
       var mine = mineList[index];
       if (mine.type === "space" && mine.number <= getPlayerLevel()) {
-
-
         for (var n = 0; n < 9; n++) {
           var x = parseInt(n / 3) - 1;
           var y = parseInt(n % 3) - 1;
@@ -473,45 +427,15 @@ function initView() {
             continue;
           }
 
-          if (mine.clicked !== false)
-            blockClick(i + x + y * height, version);
+          if (mine.clicked !== false) blockClick(i + x + y * height, version);
         }
       }
 
-
-
-      flags.ondblclick = function (e) {
-        
-      };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      flags.ondblclick = function (e) {};
 
       updateInfo();
       // updateBlock();
     });
-
-
-
-
-
-
-
-
-
-
-
 
     if (m.y === height - 1) {
       $blocks = $(`<div class="blocks"></div>`);
@@ -583,22 +507,12 @@ function initView() {
   updateInfo();
 }
 
+// 每次游戏启动调用
 function init(diff) {
   version++;
   firstFlag = true;
   difficulty = diff;
-  $actions.html("");
-  $actions.append(createButtonReset("重新开始"));
-  $actions.append(createButton("easy", "初级"));
-  $actions.append(createButton("normal", "中级"));
-  $actions.append(createButton("hard", "高级"));
-  $actions.append(createButton("lunatic", "疯狂"));
-  $actions.append(createButton("extra", "鱼"));
-  $actions.append(createButtonZoom("up", "放大"));
-  $actions.append(createButtonZoom("down", "缩小"));
-  $actions.append(createButtonCustom("自定义"));
-  $codeVersion.innerText = codeVersion;
-
+  $codeVersion.text(codeVersion);
   initData();
   caculateExpreuire();
   initView();
@@ -611,55 +525,54 @@ function init(diff) {
   }, 1000);
 
   message(`游戏开始, 等级${diff}`);
-  function createButton(level, text) {
-    var $button = $(
-      `<button class="actions-button purple-body">${text}</button>`
-    );
-    $button.on("click", function () {
-      init(level);
-    });
-    return $button;
-  }
+}
+// 进页面时调用一次
+init("normal");
 
-  function createButtonReset() {
-    return shinpei.create({
-      callback() {
-        init(difficulty);
+// 初始化重开键
+shinpei.init({
+  callback() {
+    init(difficulty);
+  },
+  selector: '.actions'
+});
+// 初始化按钮栏
+actions.init({
+  init,
+  selector: '.actions',
+  custom() {
+    custom.open({
+      callback(d) {
+        data.custom = d;
+        init('custom');
       },
     });
-  }
-  function createButtonCustom(text) {
-    var $button = $(
-      `<button class="actions-button purple-body">${text}</button>`
-    );
-    $button.on("click", function () {
-      custom.open({
-        callback(d) {
-          data.custom = d;
-          init("custom");
-        },
-      });
-    });
-    return $button;
-  }
+  },
+});
+// 初始化自定义按钮
+custom.init({
+  selector: '.actions',
+  callback(d) {
+    console.log(123);
+    data.custom = d;
+    init('custom');
+  },
+});
 
-  function createButtonZoom(up, text) {
-    var $button = $(
-      `<button class="actions-button purple-body">${text}</button>`
-    );
-    $button.on("click", function () {
-      if (up === "up") {
-        $boxWrapper.css("transform", `scale(${zoomList[++zoomLevel]})`);
-      } else {
-        $boxWrapper.css("transform", `scale(${zoomList[--zoomLevel]})`);
-      }
-      if (zoomLevel < 0) zoomLevel = 0;
-      if (zoomLevel >= zoomList.length) zoomLevel = zoomList.length - 1;
+// 初始化旗子标记
+flags.init({
+  selector: '.main',
+  dblclick() {
+    var $this = $(this);
+    var playerLevel = getPlayerLevel();
+    var buttonNum = parseInt($this.attr("data-name"));
+    _.forEach(mineList, function (m, i) {
+      if (parseInt(m.flag) === buttonNum && m.flag <= playerLevel)
+        blockClick(i, version);
     });
-    return $button;
-  }
-}
-init("normal");
+    updateInfo();
+  },
+});
 
 // 禁用默认右键
 window.oncontextmenu = function () {
@@ -707,7 +620,14 @@ $main.on("mouseup", function (e) {
   }
 });
 
+let mouseMoveTime = 0;
 function onMouseMove(e) {
+  const time = new Date().getTime();
+  if(mouseMoveTime > time) {
+    return;
+  }
+  mouseMoveTime = time + 50;
+
   $box.css("left", `${mx - cx + e.clientX}px`);
   $box.css("top", `${my - cy + e.clientY}px`);
 }

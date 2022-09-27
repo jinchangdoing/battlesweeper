@@ -57,5 +57,16 @@
       "height": 43,
       "mineNumTotal": 300
     }
+  },
+  "custom": {
+    "playerInfo": {
+      "hp": 1,
+      "exp": 0
+    },
+    "gameInfo": {
+      "width": 30,
+      "height": 30,
+      "mineNumTotal": 300
+    }
   }
 }
