@@ -534,34 +534,33 @@ shinpei.init({
   callback() {
     init(difficulty);
   },
-  selector: '.actions'
+  selector: ".actions",
 });
 // 初始化按钮栏
 actions.init({
   init,
-  selector: '.actions',
+  selector: ".actions",
   custom() {
     custom.open({
-      callback(d) {
-        data.custom = d;
-        init('custom');
+      callback(diff, customData) {
+        data.custom = customData;
+        init(diff);
       },
     });
   },
 });
 // 初始化自定义按钮
 custom.init({
-  selector: '.actions',
-  callback(d) {
-    console.log(123);
-    data.custom = d;
-    init('custom');
+  selector: ".actions",
+  callback(diff, customData) {
+    data.custom = customData;
+    init(diff);
   },
 });
 
 // 初始化旗子标记
 flags.init({
-  selector: '.main',
+  selector: ".main",
   dblclick() {
     var $this = $(this);
     var playerLevel = getPlayerLevel();
@@ -623,7 +622,7 @@ $main.on("mouseup", function (e) {
 let mouseMoveTime = 0;
 function onMouseMove(e) {
   const time = new Date().getTime();
-  if(mouseMoveTime > time) {
+  if (mouseMoveTime > time) {
     return;
   }
   mouseMoveTime = time + 50;

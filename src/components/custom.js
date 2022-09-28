@@ -16,13 +16,13 @@ var $wrapper = $(`<div class="custom-warpper">
       <div name="custom" class="custom-radio">自制</div>
     </div>
     <span>行:</span>
-    <input class="custom-input custom-row" value="30" disabled  oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
+    <input class="custom-input custom-row" value="16" disabled  oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
     <span>列:</span>
-    <input class="custom-input custom-column" value="30" disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
+    <input class="custom-input custom-column" value="14" disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')" />
     <span>雷数:</span>
-    <input class="custom-input custom-mine" value="300" disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
+    <input class="custom-input custom-mine" value="48" disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
     <span>HP:</span>
-    <input class="custom-input custom-hp" value="30"  disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
+    <input class="custom-input custom-hp" value="5"  disabled oninput="value=value.startsWith('0')?'':value.replace(/[^\\d]/g,'').replace(/^0/g,'')"  />
     <span></span>
     <div class="custom-button-group">
     </div>  
@@ -95,8 +95,9 @@ function custom(callback) {
       },
     };
     if (callback) {
+      const diff = $(`.custom-message .custom-radio[data-check="1"]`).attr('name');
       verify();
-      callback(data);
+      callback(diff, data);
     }
     $content.css("top", "-100px");
     $content.css("opacity", "0");
