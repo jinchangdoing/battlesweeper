@@ -15,13 +15,14 @@ const wrapperTemplete = `<div class="panel-wrapper">
     </div>
 </div>`;
 
-export const popPanel = function ({ title, content, style, submit }) {
+export const popPanel = function ({ title, content, style, submit, showCancel = true }) {
   const $wrapper = $(wrapperTemplete);
   const $title = $wrapper.find(".panel-title");
   const $panel = $wrapper.find(".panel");
   const $content = $wrapper.find(".panel-content");
   const $cancel = $wrapper.find(".panel-cancel");
   const $submit = $wrapper.find(".panel-submit");
+  $cancel.css("display", showCancel ? "block" : "none");
   $panel.attr("style", style);
   $title.text(title);
   $content.append(content);
@@ -29,8 +30,8 @@ export const popPanel = function ({ title, content, style, submit }) {
   $panel.css("opacity", "0");
   $app.append($wrapper);
   $submit.on("click", function () {
-    submit();
-    cancel();
+    if (submit())
+      cancel();
   });
   $cancel.on("click", function () {
     cancel();
@@ -42,7 +43,7 @@ export const popPanel = function ({ title, content, style, submit }) {
       $wrapper.remove();
     }, 200);
   }
-  setTimeout(function(){
+  setTimeout(function () {
     $panel.css("top", "0");
     $panel.css("opacity", "1");
   }, 0);

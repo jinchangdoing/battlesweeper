@@ -53,20 +53,26 @@ function changeRadio(e) {
 
 function verify() {
   if (!$hp.val() || !$mine.val() || !$row.val() || !$column.val()) {
-    return message("输入不合法");
+    message("输入不合法");
+    
   }
   if ($row.val() < 5 || $row.val() > 100) {
-    return message("行数为5-100");
+    message("行数为5-100");
+    return false;
   }
   if ($column.val() < 5 || $column.val() > 100) {
-    return message("列数为5-100");
+    message("列数为5-100");
+    return false;
   }
   if ($mine.val() > $row.val() * $column.val() * 0.4) {
-    return message("雷数应小于总棋盘数的40%！");
+    message("雷数应小于总棋盘数的40%！");
+    return false;
   }
   if ($mine.val() < 10) {
-    return message("雷数至少为10");
+    message("雷数至少为10");
+    return false;
   }
+  return true;
 }
 
 export default {
@@ -88,6 +94,7 @@ export default {
             playerInfo: {
               hp: $hp.val(),
               exp: 0,
+              level:1
             },
             gameInfo: {
               width: $column.val(),
@@ -97,9 +104,10 @@ export default {
               mineFlaged: [0, 0, 0, 0, 0, 0, 0, 0, 0],
             },
           };
-          if (callback) {
-            verify();
+          if (callback&&verify()) {
+            
             callback(diff, data);
+            return true;
           }
         },
       });

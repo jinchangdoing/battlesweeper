@@ -28,7 +28,11 @@ export default {
     $button.on('click', function() {
       popPanel({
         title: '游戏说明',
-        content: text
+        content: text,
+        submit(){
+          return true;
+        },
+        showCancel:false
       });
     });
     $(selector).append($button);

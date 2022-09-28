@@ -281,3 +281,13 @@ body {
   background: #94a0fe;
   color: #fff;
 }
+
+.topbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  top: 10px;
+  position: absolute;
+  width: 810px;
+  height: 60px;
+}

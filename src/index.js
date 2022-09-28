@@ -1,14 +1,17 @@
 import "./index.scss";
 
 import $ from "jquery";
-import _ from "lodash";
+import _, { update } from "lodash";
 import data from "./index.json";
 import custom from "./components/custom";
 import shinpei from "./components/shinpei";
-import actions from "./components/actions";
+//import actions from "./components/actions";
 import { message } from "./components/message";
 import flags from "./components/flags";
+import playerBar from "./components/playerbar";
 import instruction from "./components/instruction";
+import { autoResize } from "./events/enents.js";
+
 
 var codeVersion = "版本:0.9.4";
 var blockTemp = [];
@@ -18,18 +21,17 @@ var firstFlag = true;
 var difficulty = "normal";
 var time = 0;
 var inter = 0;
+var maxLevel = 9;
 var expRequire = [];
 var playerInfo;
 var gameInfo;
 var mineNum = [];
-var expTemp = [];
 var mineExp = [];
 var mineFlaged = [];
 var mineProportion = [];
 var expMultiplier = [];
 var mineList = [];
 var $box = $(".box");
-var $boxWrapper = $(".box-wrapper");
 var $info = $(".info");
 var $main = $(".main");
 var $toolbar = $(".toolbar");
@@ -38,6 +40,7 @@ var $codeVersion = $(".version");
 
 //根据雷自动调节经验需求
 function caculateExpreuire() {
+  var expTemp = [];
   expTemp[0] = 0;
   expRequire[0] = 0;
   //先根据雷数量设置极限升级经验
@@ -45,34 +48,31 @@ function caculateExpreuire() {
     for (var j = 0; j <= i; j++) {
       expTemp[i + 1] = mineNum[j] * mineExp[j];
       if (expTemp[i + 1] === 0) {
-        expTemp[i] = 999999;
+
+        expTemp[i - 1] = 999999;
       }
+
     }
     expTemp[i + 1] += expTemp[i];
   }
 
   for (var k = 0; k < 9; k++) {
-    expRequire[k + 1] =
-      expTemp[k] + parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
+    expRequire[k + 1] = expTemp[k] + parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
+    if (expRequire[k + 1] > 99999) {
+      maxLevel = k + 1;
+      console.log('aaa', maxLevel);
+      break;
+    }
   }
   expRequire[9] = 999999;
 }
 //根据当前经验计算玩家等级
-function getPlayerLevel() {
-  var level = 0;
-  _.forEach(expRequire, function (exp, i) {
-    if (exp <= playerInfo.exp) {
-      level = i + 1;
-    }
-  });
-  return level;
-}
-//根据当前经验计算下一级所需经验
-function getNextLevelExp() {
-  var nextExp = 0;
-  nextExp = expRequire[getPlayerLevel()] - playerInfo.exp;
-  if (nextExp > 10000) return "-";
-  return nextExp;
+function levelUp() {
+  if (playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])) {
+    playerInfo.exp -= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
+    // console.log(playerInfo.exp);
+    playerInfo.level++;
+  }
 }
 
 // 点击事件
@@ -93,7 +93,7 @@ function blockClick(i, ver) {
   if (mine.clicked) {
     return;
   }
-  if (mine.flag > getPlayerLevel()) {
+  if (mine.flag > playerInfo.level) {
     return;
   }
 
@@ -143,8 +143,8 @@ function blockClick(i, ver) {
   }
 
   // 点击到雷时 扣除血量
-  if (mine.type === "mine" && mine.number > getPlayerLevel()) {
-    playerInfo.hp -= mine.number * (mine.number - getPlayerLevel());
+  if (mine.type === "mine" && mine.number > playerInfo.level) {
+    playerInfo.hp -= mine.number * (mine.number - playerInfo.level);
     $box.css("transition", "0.05s");
     $box.css("transform", "rotate(3deg)");
     setTimeout(function () {
@@ -171,6 +171,7 @@ function blockClick(i, ver) {
   if (mine.type === "mine") {
     mineNum[mine.number - 1]--;
     playerInfo.exp += mineExp[mine.number - 1];
+    levelUp();
   }
 
   if (
@@ -233,64 +234,14 @@ function gameWin() {
   //胜利相关动画
   //
   //
-  //
+  //S
 }
 //更新显示数据面板
 function updateInfo() {
-  $info.html(`
-              <table cellspacing=0>
-                  <tr>
-                      <th>雷等级</th>
-                      <th>1</th>
-                      <th>2</th>
-                      <th>3</th>
-                      <th>4</th>
-                      <th>5</th>
-                      <th>6</th>
-                      <th>7</th>
-                      <th>8</th>
-                      <th>9</th>    
-                  </tr>
-                  <tr>
-                      <td>剩余雷数</td>
-                      <td>${mineNum[0]}</td>
-                      <td>${mineNum[1]}</td>
-                      <td>${mineNum[2]}</td>
-                      <td>${mineNum[3]}</td>
-                      <td>${mineNum[4]}</td>
-                      <td>${mineNum[5]}</td>
-                      <td>${mineNum[6]}</td>
-                      <td>${mineNum[7]}</td>
-                      <td>${mineNum[8]}</td>   
-                  </tr>
-                  <tr>
-                      <td>标记雷数</td>
-                      <td>${mineFlaged[0]}</td>
-                      <td>${mineFlaged[1]}</td>
-                      <td>${mineFlaged[2]}</td>
-                      <td>${mineFlaged[3]}</td>
-                      <td>${mineFlaged[4]}</td>
-                      <td>${mineFlaged[5]}</td>
-                      <td>${mineFlaged[6]}</td>
-                      <td>${mineFlaged[7]}</td>
-                      <td>${mineFlaged[8]}</td>   
-                  </tr>
-                  <tr>
-                      <th>难度</th> 
-                      <th colspan="2">HP</th> 
-                      <th colspan="2">等级</th> 
-                      <th colspan="3">升级经验</th> 
-                      <th colspan="2">TIME</th> 
-                  </tr>    
-                  <tr>
-                      <td>${difficulty}</td>
-                      <td colspan="2">${playerInfo.hp}</td>
-                      <td colspan="2">${getPlayerLevel()}</td>
-                      <td colspan="3">${getNextLevelExp()}</td>
-                      <td colspan="2" class="time">${time}</td>
-                  </tr>    
-              </table>
-              `);
+  var infoCurremtExp = (playerInfo.level >= maxLevel) ? '-' : playerInfo.exp;
+  var infoNextExp = (playerInfo.level >= maxLevel) ? '-' : (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
+  var infoHp = (playerInfo.hp > 0) ? playerInfo.hp : 0;
+  playerBar.update(playerInfo.level, difficulty, infoHp, infoCurremtExp, infoNextExp);
   flags.update(mineFlaged, mineNum);
 }
 
@@ -414,7 +365,7 @@ function initView() {
       var index = $(this).attr("index");
       blockClick(parseInt(index), version);
       var mine = mineList[index];
-      if (mine.type === "space" && mine.number <= getPlayerLevel()) {
+      if (mine.type === "space" && mine.number <= playerInfo.level) {
         for (var n = 0; n < 9; n++) {
           var x = parseInt(n / 3) - 1;
           var y = parseInt(n % 3) - 1;
@@ -432,7 +383,7 @@ function initView() {
         }
       }
 
-      flags.ondblclick = function (e) {};
+      flags.ondblclick = function (e) { };
 
       updateInfo();
       // updateBlock();
@@ -513,10 +464,11 @@ function init(diff) {
   version++;
   firstFlag = true;
   difficulty = diff;
-  $codeVersion.text(codeVersion);
   initData();
+  playerBar.updateMaxhp(playerInfo.hp);
   caculateExpreuire();
   initView();
+  autoResize();
   time = 0;
   if (inter) clearInterval(inter);
   inter = setInterval(function () {
@@ -529,16 +481,20 @@ function init(diff) {
 }
 // 进页面时调用一次
 init("normal");
+playerBar.init({
+  selector: ".topbar",
+});
+
 
 instruction.init({
-  selector: ".main",
-  style: "top: 10px; left: calc(50% - 220px)",
+  selector: ".topbar",
+  // style: "top: 10px; left: calc(50% - 220px)",
 });
 
 // 初始化重开键
 shinpei.init({
-  selector: ".main",
-  style: "top: 10px; left: calc(50% - 170px)",
+  selector: ".topbar",
+  // style: "top: 10px; left: calc(50% - 170px)",
   callback() {
     init(difficulty);
   },
@@ -546,8 +502,8 @@ shinpei.init({
 
 // 初始化自定义按钮
 custom.init({
-  selector: ".main",
-  style: "top: 10px; left: calc(50% - 120px)",
+  selector: ".topbar",
+  //  style: "top: 10px; left: calc(50% - 120px)",
   callback(diff, customData) {
     data.custom = customData;
     init(diff);
@@ -556,14 +512,13 @@ custom.init({
 
 // 初始化旗子标记
 flags.init({
-  selector: ".main",
-  style: "top: 10px; left: calc(50% - 70px)",
+  selector: ".topbar",
+  //  style: "top: 10px; left: calc(50% - 70px)",
   dblclick() {
     var $this = $(this);
-    var playerLevel = getPlayerLevel();
     var buttonNum = parseInt($this.attr("data-name"));
     _.forEach(mineList, function (m, i) {
-      if (parseInt(m.flag) === buttonNum && m.flag <= playerLevel)
+      if (parseInt(m.flag) === buttonNum && m.flag <= playerInfo.level)
         blockClick(i, version);
     });
     updateInfo();
@@ -574,18 +529,6 @@ flags.init({
 window.oncontextmenu = function () {
   return false;
 };
-// 缩放事件
-var zoomList = [0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0];
-var zoomLevel = 5;
-$(window).on("wheel", function (e) {
-  if (e.originalEvent.deltaY > 0) {
-    $boxWrapper.css("transform", `scale(${zoomList[--zoomLevel]})`);
-  } else {
-    $boxWrapper.css("transform", `scale(${zoomList[++zoomLevel]})`);
-  }
-  if (zoomLevel < 0) zoomLevel = 0;
-  if (zoomLevel >= zoomList.length) zoomLevel = zoomList.length - 1;
-});
 
 // 鼠标拖拽事件
 var cx = 0,
