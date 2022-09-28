@@ -4,8 +4,8 @@ import './shinpei.scss';
 var $box = $(".box");
 
 export default {
-  init({callback, selector}) {
-    var $button = $(`<div class="shinpei">
+  init({callback, selector, style}) {
+    var $button = $(`<div class="shinpei" style="${style}">
         <div class="shinpei-01"></div>
         <div class="shinpei-02"></div>
         <div class="shinpei-03"></div>

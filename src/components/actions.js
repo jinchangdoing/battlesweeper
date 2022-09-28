@@ -1,7 +1,6 @@
 import './actions.scss';
 import $ from "jquery";
 
-
 export default {
   init({ init, custom, selector }) {
     var $actions = $(selector);

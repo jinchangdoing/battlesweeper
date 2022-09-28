@@ -1,0 +1,17 @@
+.instruction {
+  pointer-events: auto;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  line-height: 40px;
+  background: #2b4484;
+  border-radius: 50%;
+  box-shadow: 0 0 1px 1px #9d8829, 0 0 0 2px #eb8e1c, 0 0 1px 2px #9d8829;
+  &:hover {
+    font-size: 26px;
+  }
+}

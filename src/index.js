@@ -8,6 +8,7 @@ import shinpei from "./components/shinpei";
 import actions from "./components/actions";
 import { message } from "./components/message";
 import flags from "./components/flags";
+import instruction from "./components/instruction";
 
 var codeVersion = "版本:0.9.4";
 var blockTemp = [];
@@ -529,29 +530,24 @@ function init(diff) {
 // 进页面时调用一次
 init("normal");
 
+instruction.init({
+  selector: ".main",
+  style: "top: 10px; left: calc(50% - 220px)",
+});
+
 // 初始化重开键
 shinpei.init({
+  selector: ".main",
+  style: "top: 10px; left: calc(50% - 170px)",
   callback() {
     init(difficulty);
   },
-  selector: ".actions",
 });
-// 初始化按钮栏
-actions.init({
-  init,
-  selector: ".actions",
-  custom() {
-    custom.open({
-      callback(diff, customData) {
-        data.custom = customData;
-        init(diff);
-      },
-    });
-  },
-});
+
 // 初始化自定义按钮
 custom.init({
-  selector: ".actions",
+  selector: ".main",
+  style: "top: 10px; left: calc(50% - 120px)",
   callback(diff, customData) {
     data.custom = customData;
     init(diff);
@@ -561,6 +557,7 @@ custom.init({
 // 初始化旗子标记
 flags.init({
   selector: ".main",
+  style: "top: 10px; left: calc(50% - 70px)",
   dblclick() {
     var $this = $(this);
     var playerLevel = getPlayerLevel();
@@ -603,6 +600,7 @@ $main.on("mousedown", function (e) {
   cy = e.clientY;
   $main.on("mousemove", onMouseMove);
 });
+
 $main.on("mouseup", function (e) {
   if (e.button !== 1) {
     return;
