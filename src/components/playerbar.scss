@@ -1,0 +1,53 @@
+.player-bar {
+  display: flex;
+  flex-direction: row;
+  margin-right: 200px;
+}
+
+.info-bar {
+  display: flex;
+  position: relative;
+  margin-right: 20px;
+  height: 30px;
+  top: 15px;
+}
+.player-level-text {
+  position: relative;
+}
+.player-bar-outter {
+  box-sizing: border-box;
+  display: flex;
+  background: #353030;
+  margin-top: 5px;
+  height: 20px;
+  width: 200px;
+  font-size: 14px;
+  color: #eee;
+  border-radius: 5px;
+  border: 2px solid #c5bfbf;
+}
+.player-hpbar-inner {
+  position: relative;
+  left: 0;
+  background-color: #ce1717;
+}
+.player-expbar-inner {
+  position: relative;
+  left: 0;
+  background-color: #4aa70c;
+}
+.info-bars {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    height: 55px;
+}
+.player-bar-span {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+}
+.player-expbar-text {
+  position: absolute;
+}

@@ -1,7 +1,7 @@
 import "./index.scss";
 
 import $ from "jquery";
-import _, { update } from "lodash";
+import _, { min, update } from "lodash";
 import data from "./index.json";
 import custom from "./components/custom";
 import shinpei from "./components/shinpei";
@@ -13,7 +13,6 @@ import instruction from "./components/instruction";
 import { autoResize } from "./events/enents.js";
 
 
-var codeVersion = "版本:0.9.4";
 var blockTemp = [];
 var excuteNum = 0;
 var version = 1;
@@ -68,7 +67,7 @@ function caculateExpreuire() {
 }
 //根据当前经验计算玩家等级
 function levelUp() {
-  if (playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])) {
+  while(playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])){
     playerInfo.exp -= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
     // console.log(playerInfo.exp);
     playerInfo.level++;
@@ -103,7 +102,7 @@ function blockClick(i, ver) {
   if (mine.flag) {
     mineFlaged[mine.flag - 1]--;
   }
-
+  //第一次点击必白
   if ((mine.type !== "space" || mine.number !== 0) && firstFlag) {
     initData(i);
     initView();
@@ -307,13 +306,14 @@ function initData(safe) {
     mineList.splice(safeList[n1], 0, space);
   }
 
-  // 计算坐标
+  // 计算坐标,初始化标记为0
   _.forEach(mineList, function (m, i) {
     mineList[i] = JSON.parse(JSON.stringify(m));
     var mine = mineList[i];
     mine.x = parseInt(i / height);
     mine.y = parseInt(i % height);
     mine.i = i;
+    mine.flag = 0;
   });
   // 计算数值
   _.forEach(mineList, function (m, i) {
@@ -336,13 +336,22 @@ function initData(safe) {
       }
     }
   });
+
+
 }
 
 // 页面初始化
 function initView() {
   var height = gameInfo.height;
+  var width = gameInfo.width;
   var $blocks = $(`<div class="blocks"></div>`);
   $box.html("");
+  $box.css("left", `0px`);
+  $box.css("top", `0px`);
+
+
+
+
   _.forEach(mineList, function (m, i) {
     if (m.y === 0) {
       $box.append($blocks);
@@ -364,18 +373,45 @@ function initView() {
     $block.on("click", function (e) {
       var index = $(this).attr("index");
       blockClick(parseInt(index), version);
+      var n, x, y;
       var mine = mineList[index];
-      if (mine.type === "space" && mine.number <= playerInfo.level) {
-        for (var n = 0; n < 9; n++) {
-          var x = parseInt(n / 3) - 1;
-          var y = parseInt(n % 3) - 1;
+      var mineSum = 0;
+      var mineSumTemp = 0;
+      //计算周围标记以及挖开雷等级之和
+      for (n = 0; n < 9; n++) {
+        x = parseInt(n / 3) - 1;
+        y = parseInt(n % 3) - 1;
+        if (i < width && y === -1) {
+          continue;
+        }
+        if (i > width * (height - 1) && y === 1) {
+          continue;
+        }
+        if (i % height === 0 && x === -1) {
+          continue;
+        }
+        if (i % height === height - 1 && x === 1) {
+          continue;
+        }
+        if (x === 0 && y === 0) {
+          continue;
+        }
+        mineSumTemp = mineList[i + x + y * height] === 'mine' ? mineList[i + x + y * height].number : mineList[i + x + y * height].flag;
+        console.log(mineSumTemp);
+        mineSum += parseInt(mineSumTemp);
+      }
+      console.log(mine.number,mineSum);
+      if (mine.type === "space" && mine.number - mineSum >= 0 && (mine.number - mineSum) <= playerInfo.level) {
+        for (n = 0; n < 9; n++) {
+          x = parseInt(n / 3) - 1;
+          y = parseInt(n % 3) - 1;
           if (i % height === 0 && x === -1) {
             continue;
           }
           if (i % height === height - 1 && x === 1) {
             continue;
           }
-          if (x === 0 && y === 1) {
+          if (x === 0 && y === 0) {
             continue;
           }
 
@@ -469,6 +505,7 @@ function init(diff) {
   caculateExpreuire();
   initView();
   autoResize();
+  console.log(111);
   time = 0;
   if (inter) clearInterval(inter);
   inter = setInterval(function () {

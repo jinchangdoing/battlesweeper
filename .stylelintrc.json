@@ -3,6 +3,8 @@
   "rules":{
     "no-descending-specificity": null,
     "at-rule-no-unknown": null,
-    "rule-empty-line-before": null
+    "rule-empty-line-before": null,
+    "indentation": null,
+    "no-missing-end-of-source-newline": null
   }
 }

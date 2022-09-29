@@ -1,22 +1,24 @@
 import $ from 'jquery';
 import { update } from 'lodash';
-import './instruction.scss';
+import './playerbar.scss';
 var $info = $(
-    `<div class="playerinfo">
-        <div class="info-bars">
+    `<div class="player-bar">
+        <div class="info-bar">
             <span class="player-level-text"></span>
         </div>
-        <div class="info-bars">
+        <div class="info-bar">
             <span class="difficulty-text"></span>
         </div>
         <div class="info-bars">
-            <div class="player-hpbar-outter">  
-                <div class="player-hpbar-inner"></div>       
-                <span class="player-hpbar-text"></span>           
+            <div class="player-bar-outter">  
+                <div class="player-hpbar-inner"></div>
+                <div class="player-bar-span"><span class="player-hpbar-text"></span></div>     
+                         
             </div>
-            <div class="player-expbar=outter"> 
-                <div class="player-expbar-inner"></div>                                
-                <span class="player-expbar-text"></span>          
+            <div class="player-bar-outter"> 
+                <div class="player-expbar-inner"></div>
+                <div class="player-bar-span"><span class="player-expbar-text"></span></div>                                 
+                          
             </div>
         </div>
     </div>`
@@ -33,9 +35,17 @@ export default {
         const $difficulty=$info.find('.difficulty-text');
         $difficulty.text(`难度: ${difficulty}`);
         const $hp=$info.find('.player-hpbar-text');
-        $hp.text(`${hp}/${maxHp}`);
+        $hp.text(`HP:${hp}/${maxHp}`);
         const $exp=$info.find('.player-expbar-text');
-        $exp.text(`${playerExp}/${nextLevelExp}`);
+        $exp.text(`EXP:${playerExp}/${nextLevelExp}`);
+        const $hpbar=$info.find('.player-hpbar-inner'); 
+        $hpbar.width(`${100*hp/maxHp}%`);  
+        const $expbar=$info.find('.player-expbar-inner');
+        if(nextLevelExp==='-') 
+            $expbar.width(`100%`);
+        else 
+            $expbar.width(`${100*playerExp/nextLevelExp}%`);
+
     },
     updateMaxhp(hp){
         maxHp=hp;
