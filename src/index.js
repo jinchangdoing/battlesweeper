@@ -100,9 +100,9 @@ function blockClick(i, ver) {
   // 标记已点击
   mine.clicked = true;
   //扣除标记数
-  if (mine.flag) {
-    mine.flag = 0;
+  if (mine.flag) {    
     mineFlaged[mine.flag - 1]--;
+    mine.flag = 0;
   }
   //第一次点击必白
   if ((mine.type !== "space" || mine.number !== 0) && firstFlag) {
@@ -250,8 +250,9 @@ function updateInfo() {
   var infoHp = (playerInfo.hp > 0) ? playerInfo.hp : 0;
   var infoFlag = [];
   playerBar.update(playerInfo.level, difficulty, infoHp, infoCurremtExp, infoNextExp);
-  for (var i = 0; i < mineFlaged.length; i++)
+  for (var i = 0; i < mineFlaged.length; i++){
     infoFlag[i] = mineNum[i] - mineFlaged[i];
+  }
   flags.update(infoFlag, mineNum);
 }
 
