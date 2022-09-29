@@ -2,7 +2,8 @@ import $ from "jquery";
 
 
 
-const $boxWrapper =$('.box');
+const $boxWrapper =$('.box-wrapper');
+const $box =$('.box');
 const $topBar =$('.topbar');
 let zoomLevel = 1;
 export const autoResize = function(e){
@@ -10,8 +11,8 @@ export const autoResize = function(e){
 
     const windowHeight = window.innerHeight-140;
     const windowWidth = window.innerWidth-60;   
-    const boxWidth=$boxWrapper.width();
-    const boxHeight=$boxWrapper.height();
+    const boxWidth=$box.width();
+    const boxHeight=$box.height();
     let widthPerportion = windowWidth/boxWidth;
     let heightPerportion = windowHeight/boxHeight;
     let perportion =Math.min(widthPerportion,heightPerportion);
@@ -33,5 +34,9 @@ export const autoResize = function(e){
     
 
 };
+
+
+
+
 window.onresize = autoResize;
 window.onload = autoResize;

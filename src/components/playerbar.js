@@ -21,13 +21,20 @@ var $info = $(
                           
             </div>
         </div>
+        <div class="timer">
+            <span class="timer-text">Time:</span>
+        </div>
+        <div class="result"></div>
     </div>`
   ); 
 let maxHp = 0;
+const $time=$info.find('.timer-text');
 export default {
     init({selector, style}) {
       $info.attr('style',style);    
       $(selector).append($info);
+      
+      
     },
     update(playerLevel,difficulty,hp,playerExp,nextLevelExp) {
         const $playerLevel=$info.find('.player-level-text');
@@ -50,5 +57,8 @@ export default {
     updateMaxhp(hp){
         maxHp=hp;
 
+    },
+    updateTime(time){
+        $time.text(`Time: ${time}`);
     }
   };

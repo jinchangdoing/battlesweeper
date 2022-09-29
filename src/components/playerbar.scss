@@ -1,7 +1,6 @@
 .player-bar {
   display: flex;
   flex-direction: row;
-  margin-right: 200px;
 }
 
 .info-bar {
@@ -20,7 +19,7 @@
   background: #353030;
   margin-top: 5px;
   height: 20px;
-  width: 200px;
+  width: 180px;
   font-size: 14px;
   color: #eee;
   border-radius: 5px;
@@ -50,4 +49,17 @@
 }
 .player-expbar-text {
   position: absolute;
+}
+.timer {
+  display: flex;
+  position: relative;
+  left: 20px;
+  width: 100px;
+  margin-right: 20px;
+  height: 30px;
+  top: 15px;
+}
+.result {
+  height: 55px;
+  width: 100px;
 }

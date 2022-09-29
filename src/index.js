@@ -31,7 +31,6 @@ var mineProportion = [];
 var expMultiplier = [];
 var mineList = [];
 var $box = $(".box");
-var $info = $(".info");
 var $main = $(".main");
 var $toolbar = $(".toolbar");
 var $toolbarWrapper = $(".toolbar-wrapper");
@@ -59,7 +58,6 @@ function caculateExpreuire() {
     expRequire[k + 1] = expTemp[k] + parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
     if (expRequire[k + 1] > 99999) {
       maxLevel = k + 1;
-      console.log('aaa', maxLevel);
       break;
     }
   }
@@ -67,12 +65,15 @@ function caculateExpreuire() {
 }
 //根据当前经验计算玩家等级
 function levelUp() {
-  while(playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])){
+  while (playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])) {
     playerInfo.exp -= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
     // console.log(playerInfo.exp);
     playerInfo.level++;
   }
 }
+
+
+
 
 // 点击事件
 function blockClick(i, ver) {
@@ -240,8 +241,11 @@ function updateInfo() {
   var infoCurremtExp = (playerInfo.level >= maxLevel) ? '-' : playerInfo.exp;
   var infoNextExp = (playerInfo.level >= maxLevel) ? '-' : (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
   var infoHp = (playerInfo.hp > 0) ? playerInfo.hp : 0;
+  var infoFlag = [];
   playerBar.update(playerInfo.level, difficulty, infoHp, infoCurremtExp, infoNextExp);
-  flags.update(mineFlaged, mineNum);
+  for (var i = 0; i < mineFlaged.length; i++)
+    infoFlag[i] = mineNum[i] - mineFlaged[i];
+  flags.update(infoFlag, mineNum);
 }
 
 // 数据初始化
@@ -261,10 +265,10 @@ function initData(safe) {
     for (var n = 0; n < 9; n++) {
       var x = parseInt(n / 3) - 1;
       var y = parseInt(n % 3) - 1;
-      if (safe < width && y === -1) {
+      if (safe < height && y === -1) {
         continue;
       }
-      if (safe > width * (height - 1) && y === 1) {
+      if (safe > height * (width - 1) && y === 1) {
         continue;
       }
 
@@ -381,10 +385,10 @@ function initView() {
       for (n = 0; n < 9; n++) {
         x = parseInt(n / 3) - 1;
         y = parseInt(n % 3) - 1;
-        if (i < width && y === -1) {
+        if (i < height && y === -1) {
           continue;
         }
-        if (i > width * (height - 1) && y === 1) {
+        if (i > height * (width - 1) && y === 1) {
           continue;
         }
         if (i % height === 0 && x === -1) {
@@ -396,11 +400,14 @@ function initView() {
         if (x === 0 && y === 0) {
           continue;
         }
-        mineSumTemp = mineList[i + x + y * height] === 'mine' ? mineList[i + x + y * height].number : mineList[i + x + y * height].flag;
-        console.log(mineSumTemp);
+        console.log(width,i,x,y);
+
+        mineSumTemp = (mineList[i + x + y * height].type === 'mine' && mineList[i + x + y * height].clicked === true) ? mineList[i + x + y * height].number : mineList[i + x + y * height].flag;
+
         mineSum += parseInt(mineSumTemp);
+
       }
-      console.log(mine.number,mineSum);
+      console.log(mineSum);
       if (mine.type === "space" && mine.number - mineSum >= 0 && (mine.number - mineSum) <= playerInfo.level) {
         for (n = 0; n < 9; n++) {
           x = parseInt(n / 3) - 1;
@@ -505,13 +512,11 @@ function init(diff) {
   caculateExpreuire();
   initView();
   autoResize();
-  console.log(111);
   time = 0;
   if (inter) clearInterval(inter);
   inter = setInterval(function () {
     time++;
-    var $time = document.querySelector(".time");
-    if ($time) $time.innerText = time;
+    playerBar.updateTime(time);
   }, 1000);
 
   message(`游戏开始, 等级${diff}`);
