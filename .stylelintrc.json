@@ -5,6 +5,7 @@
     "at-rule-no-unknown": null,
     "rule-empty-line-before": null,
     "indentation": null,
-    "no-missing-end-of-source-newline": null
+    "no-missing-end-of-source-newline": null,
+    "declaration-block-no-redundant-longhand-properties":null
   }
 }

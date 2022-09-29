@@ -101,6 +101,7 @@ function blockClick(i, ver) {
   mine.clicked = true;
   //扣除标记数
   if (mine.flag) {
+    mine.flag = 0;
     mineFlaged[mine.flag - 1]--;
   }
   //第一次点击必白
@@ -108,6 +109,12 @@ function blockClick(i, ver) {
     initData(i);
     initView();
     blockClick(i, ver);
+    time = 0;
+    if (inter) clearInterval(inter);
+    inter = setInterval(function () {
+      time++;
+      playerBar.updateTime(time);
+    }, 1000);
     return;
   }
   firstFlag = false;
@@ -400,14 +407,14 @@ function initView() {
         if (x === 0 && y === 0) {
           continue;
         }
-        console.log(width,i,x,y);
+       
 
         mineSumTemp = (mineList[i + x + y * height].type === 'mine' && mineList[i + x + y * height].clicked === true) ? mineList[i + x + y * height].number : mineList[i + x + y * height].flag;
 
         mineSum += parseInt(mineSumTemp);
 
       }
-      console.log(mineSum);
+
       if (mine.type === "space" && mine.number - mineSum >= 0 && (mine.number - mineSum) <= playerInfo.level) {
         for (n = 0; n < 9; n++) {
           x = parseInt(n / 3) - 1;
@@ -454,9 +461,12 @@ function initView() {
   var targetMask;
   $(`.block > .block-mask`).on("contextmenu", function (e) {
     targetMask = e.target;
+    const windowWidth = window.innerWidth;
+    e.clientX=(e.clientX + 210 < windowWidth)?e.clientX:e.clientX - 210;
     $toolbar.css("left", e.clientX + "px");
     $toolbar.css("top", e.clientY + "px");
     $toolbarWrapper.css("display", "block");
+
   });
 
   // 清除雷等级
@@ -512,12 +522,12 @@ function init(diff) {
   caculateExpreuire();
   initView();
   autoResize();
-  time = 0;
-  if (inter) clearInterval(inter);
-  inter = setInterval(function () {
-    time++;
-    playerBar.updateTime(time);
-  }, 1000);
+  playerBar.updateTime(0);
+  clearInterval(inter);
+  cx = 0;
+  cy = 0;
+  mx = 0;
+  my = 0;
 
   message(`游戏开始, 等级${diff}`);
 }

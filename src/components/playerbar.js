@@ -22,7 +22,7 @@ var $info = $(
             </div>
         </div>
         <div class="timer">
-            <span class="timer-text">Time:</span>
+            <span class="timer-text">Time:0</span>
         </div>
         <div class="result"></div>
     </div>`
