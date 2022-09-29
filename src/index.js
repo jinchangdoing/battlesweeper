@@ -41,6 +41,7 @@ function caculateExpreuire() {
   var expTemp = [];
   expTemp[0] = 0;
   expRequire[0] = 0;
+  
   //先根据雷数量设置极限升级经验
   for (var i = 0; i < 10; i++) {
     for (var j = 0; j <= i; j++) {
@@ -49,6 +50,7 @@ function caculateExpreuire() {
 
         expTemp[i - 1] = 999999;
       }
+      
 
     }
     expTemp[i + 1] += expTemp[i];
@@ -56,6 +58,7 @@ function caculateExpreuire() {
 
   for (var k = 0; k < 9; k++) {
     expRequire[k + 1] = expTemp[k] + parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
+    
     if (expRequire[k + 1] > 99999) {
       maxLevel = k + 1;
       break;
@@ -63,6 +66,9 @@ function caculateExpreuire() {
   }
   expRequire[9] = 999999;
 }
+
+
+
 //根据当前经验计算玩家等级
 function levelUp() {
   while (playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])) {
@@ -319,7 +325,7 @@ function initGameData() {
   playerBar.updateMaxhp(playerInfo.hp);
   clearInterval(inter);
   playerBar.updateTime(0);
-  caculateExpreuire();
+  
 
 
 }
@@ -529,6 +535,7 @@ function init(diff) {
   difficulty = diff;
   initGameData();
   initBlockData();
+  caculateExpreuire();
   initBlockView();
   fixPosition();
   autoResize();
