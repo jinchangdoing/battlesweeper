@@ -5,11 +5,7 @@ var $box = $(".box");
 
 export default {
   init({callback, selector, style}) {
-    var $button = $(`<div class="shinpei" style="${style}">
-        <div class="shinpei-01"></div>
-        <div class="shinpei-02"></div>
-        <div class="shinpei-03"></div>
-    </div>`);
+    var $button = $(`<div class="refresh" style="${style}"><i class="fa fa-sharp fa-solid fa-rotate-right"></i></div>`);
     $button.on("click", function () {
       if (callback) {
         callback();
@@ -28,3 +24,4 @@ export default {
     $(selector).append($button);
   },
 };
+
