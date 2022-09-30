@@ -20,7 +20,7 @@ const text = `<div style="padding: 20px;">
     左键双击屏幕正下方的旗子图标，可以挖开所有被该旗子标记的方块。
   </p>
   <p style="padding: 5px 10px; margin: 0">
-    版本1.0.0
+    版本1.0.2
   </p>
 </div>`;
 export default {
