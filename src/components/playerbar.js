@@ -5,8 +5,6 @@ var $info = $(
     `<div class="player-bar">
         <div class="info-bar">
             <span class="player-level-text"></span>
-        </div>
-        <div class="info-bar">
             <span class="difficulty-text"></span>
         </div>
         <div class="info-bars">

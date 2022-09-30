@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import './shinpei.scss';
+import './refresh.scss';
 
 var $box = $(".box");
 

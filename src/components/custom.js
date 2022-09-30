@@ -12,7 +12,8 @@ var $customForm = $(`
       <div name="normal" class="custom-radio">普通</div>
       <div name="hard" class="custom-radio">困难</div>
       <div name="lunatic" class="custom-radio">疯狂</div>
-      <div name="extra" class="custom-radio">鱼</div>
+      <div name="extra" class="custom-radio">终极</div>
+      <div name="extra" class="custom-radio custom-radio-fish">鱼</div>
       <div name="custom" class="custom-radio">自制</div>
     </div>
     <span>行:</span>
@@ -97,6 +98,8 @@ export default {
               level:1
             },
             gameInfo: {
+              difficulty:"自定义",
+              expMultiplier: [0.5, 0.3, 0.75, 0.875, 0.96875, 0.958, 0.95, 1, 1],
               width: $column.val(),
               height: $row.val(),
               mineExp: [1, 2, 4, 8, 16, 32, 64, 128, 256],

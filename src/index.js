@@ -4,13 +4,14 @@ import $ from "jquery";
 import _ from "lodash";
 import data from "./index.json";
 import custom from "./components/custom";
-import shinpei from "./components/shinpei";
+import refresh from "./components/refresh";
 //import actions from "./components/actions";
-import { message } from "./components/message";
+import { message,messageRemove } from "./components/message";
 import flags from "./components/flags";
 import playerBar from "./components/playerbar";
 import instruction from "./components/instruction";
-import { autoResize, fixPosition } from "./events/enents.js";
+import { autoResize, fixPosition } from "./events/events";
+import centerbutton from "./components/centerbutton";
 
 
 var blockTemp = [];
@@ -30,18 +31,17 @@ var mineFlaged = [];
 var mineProportion = [];
 var expMultiplier = [];
 var blockList = [];
+let difficultyName;
 var $box = $(".box");
-var $main = $(".main");
 var $toolbar = $(".toolbar");
 var $toolbarWrapper = $(".toolbar-wrapper");
-var $codeVersion = $(".version");
 
 //根据雷自动调节经验需求
 function caculateExpreuire() {
   var expTemp = [];
   expTemp[0] = 0;
   expRequire[0] = 0;
-  
+
   //先根据雷数量设置极限升级经验
   for (var i = 0; i < 10; i++) {
     for (var j = 0; j <= i; j++) {
@@ -50,7 +50,7 @@ function caculateExpreuire() {
 
         expTemp[i - 1] = 999999;
       }
-      
+
 
     }
     expTemp[i + 1] += expTemp[i];
@@ -58,7 +58,7 @@ function caculateExpreuire() {
 
   for (var k = 0; k < 9; k++) {
     expRequire[k + 1] = expTemp[k] + parseInt(mineNum[k] * mineExp[k] * expMultiplier[k]);
-    
+
     if (expRequire[k + 1] > 99999) {
       maxLevel = k + 1;
       break;
@@ -77,7 +77,7 @@ function levelUp() {
   }
 }
 
-function autoClick(index,i) {
+function autoClick(index, i) {
 
   const height = gameInfo.height;
   const width = gameInfo.width;
@@ -206,10 +206,18 @@ function blockClick(i, ver) {
 
     return;
   }
-
+  // 点击到雷时 增加经验,扣除雷数
+  if (block.type === "mine") {
+    mineNum[block.number - 1]--;
+    playerInfo.exp += mineExp[block.number - 1];
+    message(`Exp+${mineExp[block.number - 1]}`, '#44c013');
+    levelUp();
+  }
   // 点击到雷时 扣除血量
   if (block.type === "mine" && block.number > playerInfo.level) {
-    playerInfo.hp -= block.number * (block.number - playerInfo.level);
+    const damage = block.number * (block.number - playerInfo.level);
+    playerInfo.hp -= damage;
+    message(`Hp-${damage}`, '#a70c0c');
     $box.css("transition", "0.05s");
     $box.css("transform", "rotate(3deg)");
     setTimeout(function () {
@@ -231,13 +239,9 @@ function blockClick(i, ver) {
   // 血量归零时 游戏结束
   if (playerInfo.hp <= 0) {
     gameOver();
+    return;
   }
-  // 点击到雷时 增加经验,扣除雷数
-  if (block.type === "mine") {
-    mineNum[block.number - 1]--;
-    playerInfo.exp += mineExp[block.number - 1];
-    levelUp();
-  }
+
 
   if (
     _.reduce(
@@ -286,7 +290,28 @@ function gameOver() {
   });
 }
 function gameWin() {
-  message("您就是挖雷至尊？");
+  switch (difficulty) {
+    case 'easy':
+      message("害搁这挖easy那？","",1);
+      break;
+    case 'normal':
+      message("你好像会了点啊","",1);
+      break;
+    case 'hard':
+      message("可以可以，要不试试上难度？","",1);
+      break;
+    case 'extra':
+      message("您就是挖雷至尊？","",1);
+      break;
+    case 'super':
+      message("鱼哥牛逼！","",1);
+      break;
+    case 'custom':
+      message("要不要试试100x100,4000雷？","",1);
+      break;
+    default:
+        console.log(`这难度不对劲`,"",1);
+  }
   // 结束计时器
   if (inter) {
     clearInterval(inter);
@@ -307,7 +332,7 @@ function updateInfo() {
   var infoNextExp = (playerInfo.level >= maxLevel) ? '-' : (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
   var infoHp = (playerInfo.hp > 0) ? playerInfo.hp : 0;
   var infoFlag = [];
-  playerBar.update(playerInfo.level, difficulty, infoHp, infoCurremtExp, infoNextExp);
+  playerBar.update(playerInfo.level, difficultyName, infoHp, infoCurremtExp, infoNextExp);
   for (var i = 0; i < mineFlaged.length; i++) {
     infoFlag[i] = mineNum[i] - mineFlaged[i];
   }
@@ -319,13 +344,14 @@ function initGameData() {
   playerInfo = dataclone[difficulty].playerInfo;
   mineFlaged = dataclone.mineFlaged;
   mineExp = dataclone.mineExp;
-  expMultiplier = dataclone.expMultiplier;
+  expMultiplier = dataclone[difficulty].gameInfo.expMultiplier;
+  difficultyName = dataclone[difficulty].gameInfo.difficulty;
   mineProportion = dataclone.mineProportion;
   firstFlag = true;
   playerBar.updateMaxhp(playerInfo.hp);
   clearInterval(inter);
   playerBar.updateTime(0);
-  
+
 
 
 }
@@ -450,7 +476,7 @@ function initBlockView() {
     $block.on("click", function (e) {
       var index = $(this).attr("index");
       blockClick(parseInt(index), initCounts);
-      autoClick(parseInt(index),i);
+      autoClick(parseInt(index), i);
       flags.ondblclick = function (e) { };
       updateInfo();
 
@@ -533,13 +559,14 @@ function initBlockView() {
 function init(diff) {
   initCounts++;
   difficulty = diff;
+  messageRemove();
   initGameData();
   initBlockData();
   caculateExpreuire();
   initBlockView();
   fixPosition();
   autoResize();
-  message(`游戏开始, 等级${diff}`);
+  message(`游戏开始,等级${difficultyName}`);
 }
 
 
@@ -552,19 +579,21 @@ playerBar.init({
 });
 
 
-instruction.init({
-  selector: ".topbar",
-  // style: "top: 10px; left: calc(50% - 220px)",
-});
+
 
 // 初始化重开键
-shinpei.init({
+refresh.init({
   selector: ".topbar",
   // style: "top: 10px; left: calc(50% - 170px)",
   callback() {
     init(difficulty);
   },
 });
+centerbutton.init({
+  selector: ".topbar",
+  // style: "top: 10px; left: calc(50% - 220px)",
+});
+
 
 // 初始化自定义按钮
 custom.init({
@@ -589,6 +618,10 @@ flags.init({
     });
     updateInfo();
   },
+});
+instruction.init({
+  selector: ".topbar",
+  // style: "top: 10px; left: calc(50% - 220px)",
 });
 
 // 禁用默认右键

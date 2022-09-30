@@ -5,6 +5,7 @@
   left: 0;
   transition: 0.5s;
   width: calc(100% - 300px);
+  pointer-events: none;
 
   & > .message-content {
     padding: 10px;
