@@ -29,6 +29,7 @@ var mineNum = [];
 var mineExp = [];
 var mineFlaged = [];
 var mineProportion = [];
+let winMessage;
 var expMultiplier = [];
 var blockList = [];
 let difficultyName;
@@ -74,7 +75,10 @@ function levelUp() {
   while (playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])) {
     playerInfo.exp -= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
     playerInfo.level++;
-    message('LEVELUP!','#c9cc05');
+    message({
+      msg: 'LEVELUP!',
+      contentStyle: 'color: #c9cc05;'
+    });
   }
   
 }
@@ -163,17 +167,26 @@ function blockClick(i, ver) {
     mineFlaged[block.flag - 1]--;
     block.flag = 0;
   }
-  //第一次点击必白
-  if ((block.type !== "space" || block.number !== 0) && firstFlag) {
-    initBlockData(i);
-    initBlockView();
-    blockClick(i, ver);
+  //第一次点击时开始计时
+  if(firstFlag){
     time = 0;
     if (inter) clearInterval(inter);
     inter = setInterval(function () {
       time++;
       playerBar.updateTime(time);
     }, 1000);
+  }
+
+
+
+
+
+  //第一次点击必白
+  if ((block.type !== "space" || block.number !== 0) && firstFlag) {
+    initBlockData(i);
+    initBlockView();
+    blockClick(i, ver);
+    
     return;
   }
   firstFlag = false;
@@ -208,18 +221,21 @@ function blockClick(i, ver) {
 
     return;
   }
-  // 点击到雷时 增加经验,扣除雷数
-  if (block.type === "mine") {
-    mineNum[block.number - 1]--;
-    playerInfo.exp += mineExp[block.number - 1];
-    message(`Exp+${mineExp[block.number - 1]}`, '#44c013');
-    levelUp();
-  }
+ 
+  
   // 点击到雷时 扣除血量
   if (block.type === "mine" && block.number > playerInfo.level) {
     const damage = block.number * (block.number - playerInfo.level);
     playerInfo.hp -= damage;
-    message(`Hp-${damage}`, '#a70c0c');
+    message({
+      msg: `Hp-${damage}`,
+      style: 'left:30px',
+      contentStyle: 'color: #a70c0c;'
+    });
+
+
+
+    
     $box.css("transition", "0.05s");
     $box.css("transform", "rotate(3deg)");
     setTimeout(function () {
@@ -242,6 +258,18 @@ function blockClick(i, ver) {
   if (playerInfo.hp <= 0) {
     gameOver();
     return;
+  }
+   // 点击到雷时 增加经验,扣除雷数
+  if (block.type === "mine") {
+    mineNum[block.number - 1]--;
+    playerInfo.exp += mineExp[block.number - 1];
+
+    message({
+      msg: `Exp+${mineExp[block.number - 1]}`,
+      style: 'left:100px',
+      contentStyle: 'color: #44c013;'
+    });
+    levelUp();
   }
 
 
@@ -270,7 +298,10 @@ function updateTable() {
 }
 
 function gameOver() {
-  message("你输了 - ^ -","",1);
+  message({
+    msg: '你输了 - ^ -',
+    stay: 1
+  });
   // 结束计时器
   if (inter) {
     clearInterval(inter);
@@ -292,31 +323,7 @@ function gameOver() {
   });
 }
 function gameWin() {
-  switch (difficulty) {
-    case 'easy':
-      message("害搁这挖easy那？", "", 1);
-      break;
-    case 'normal':
-      message("你好像会点了啊", "", 1);
-      break;
-    case 'hard':
-      message("可以可以，要不试试上难度？", "", 1);
-      break;
-    case 'lunatic':
-      message("啊这，你又给他挖干净了", "", 1);
-      break;
-    case 'extra':
-      message("您就是挖雷至尊？", "", 1);
-      break;
-    case 'super':
-      message("鱼哥牛逼！", "", 1);
-      break;
-    case 'custom':
-      message("要不要试试100x100,4000雷？", "", 1);
-      break;
-    default:
-      console.log(`这难度不对劲`, "", 1);
-  }
+
   // 结束计时器
   if (inter) {
     clearInterval(inter);
@@ -325,6 +332,16 @@ function gameWin() {
   $(`.block > .block-mask`).each(function (i, d) {
     $(d).css("pointer-events", "none");
   });
+  message({
+    msg: '过关了！！',
+    style: 'left:30px',
+    stay:1
+  });
+  message({
+    msg: winMessage,
+    stay:1
+  });
+   
   //////////////////
   //胜利相关动画
   //
@@ -351,6 +368,7 @@ function initGameData() {
   mineExp = dataclone.mineExp;
   expMultiplier = dataclone[difficulty].gameInfo.expMultiplier;
   difficultyName = dataclone[difficulty].gameInfo.difficulty;
+  winMessage = dataclone[difficulty].gameInfo.winMessage;
   mineProportion = dataclone.mineProportion;
   firstFlag = true;
   playerBar.updateMaxhp(playerInfo.hp);
@@ -571,7 +589,9 @@ function init(diff) {
   initBlockView();
   fixPosition();
   autoResize();
-  message(`游戏开始,等级${difficultyName}`);
+  message({
+    msg: `游戏开始,等级${difficultyName}`,
+  });
 }
 
 

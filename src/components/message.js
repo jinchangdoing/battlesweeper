@@ -2,9 +2,9 @@ import './message.scss';
 import $ from 'jquery';
 var $app = $('#app');
 let $messageWin;
-export function message(msg, color, stay) {
-  const $message = $(`<div class="message" style="left: 180px; top: -100px; opacity: 0;">
-      <div class="message-content">
+export const message = function ({ msg,style,contentStyle,stay = false }){
+  const $message = $(`<div class="message" style="${style}">
+      <div class="message-content" style="${contentStyle}">
         ${msg}
       </div>
     </div>`);
@@ -12,8 +12,6 @@ export function message(msg, color, stay) {
   setTimeout(function () {
     $message.css("top", "15px");
     $message.css("opacity", "1");
-    if (color)
-      $message.css("color", `${color}`);
     if (stay)
       $messageWin = $message;
   }, 0);
@@ -28,7 +26,7 @@ export function message(msg, color, stay) {
     if (!stay)
       $app.remove($message);
   }, 3000);
-}
+};
 
 export function messageRemove() {
   if ($messageWin) {

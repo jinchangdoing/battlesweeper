@@ -99,6 +99,7 @@ export default {
             },
             gameInfo: {
               difficulty:"自定义",
+              winMessage: "要不要试试100x100,4000雷？",
               expMultiplier: [0.5, 0.3, 0.75, 0.875, 0.96875, 0.958, 0.95, 1, 1],
               width: $column.val(),
               height: $row.val(),

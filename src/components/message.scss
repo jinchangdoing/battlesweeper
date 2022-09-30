@@ -2,7 +2,9 @@
   display: flex;
   justify-content: center;
   position: fixed;
-  left: 0;
+  left: 180px;
+  top: 0;
+  opacity: 0;
   transition: 0.5s;
   width: calc(100% - 300px);
   pointer-events: none;
