@@ -38,7 +38,7 @@ export default {
         const $playerLevel=$info.find('.player-level-text');
         $playerLevel.text(`Lv: ${playerLevel}`);
         const $difficulty=$info.find('.difficulty-text');
-        $difficulty.text(`难度: ${difficulty}`);
+        $difficulty.text(`${difficulty}`);
         const $hp=$info.find('.player-hpbar-text');
         $hp.text(`HP:${hp}/${maxHp}`);
         const $exp=$info.find('.player-expbar-text');

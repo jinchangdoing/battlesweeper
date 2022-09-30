@@ -6,7 +6,7 @@ import data from "./index.json";
 import custom from "./components/custom";
 import refresh from "./components/refresh";
 //import actions from "./components/actions";
-import { message,messageRemove } from "./components/message";
+import { message, messageRemove } from "./components/message";
 import flags from "./components/flags";
 import playerBar from "./components/playerbar";
 import instruction from "./components/instruction";
@@ -74,7 +74,9 @@ function levelUp() {
   while (playerInfo.exp >= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1])) {
     playerInfo.exp -= (expRequire[playerInfo.level] - expRequire[playerInfo.level - 1]);
     playerInfo.level++;
+    message('LEVELUP!','#c9cc05');
   }
+  
 }
 
 function autoClick(index, i) {
@@ -268,7 +270,7 @@ function updateTable() {
 }
 
 function gameOver() {
-  message("你输了 - ^ -");
+  message("你输了 - ^ -","",1);
   // 结束计时器
   if (inter) {
     clearInterval(inter);
@@ -292,25 +294,28 @@ function gameOver() {
 function gameWin() {
   switch (difficulty) {
     case 'easy':
-      message("害搁这挖easy那？","",1);
+      message("害搁这挖easy那？", "", 1);
       break;
     case 'normal':
-      message("你好像会了点啊","",1);
+      message("你好像会点了啊", "", 1);
       break;
     case 'hard':
-      message("可以可以，要不试试上难度？","",1);
+      message("可以可以，要不试试上难度？", "", 1);
+      break;
+    case 'lunatic':
+      message("啊这，你又给他挖干净了", "", 1);
       break;
     case 'extra':
-      message("您就是挖雷至尊？","",1);
+      message("您就是挖雷至尊？", "", 1);
       break;
     case 'super':
-      message("鱼哥牛逼！","",1);
+      message("鱼哥牛逼！", "", 1);
       break;
     case 'custom':
-      message("要不要试试100x100,4000雷？","",1);
+      message("要不要试试100x100,4000雷？", "", 1);
       break;
     default:
-        console.log(`这难度不对劲`,"",1);
+      console.log(`这难度不对劲`, "", 1);
   }
   // 结束计时器
   if (inter) {

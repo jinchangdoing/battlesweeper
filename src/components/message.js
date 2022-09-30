@@ -2,7 +2,7 @@ import './message.scss';
 import $ from 'jquery';
 var $app = $('#app');
 let $messageWin;
-export function message(msg, color, isWin) {
+export function message(msg, color, stay) {
   const $message = $(`<div class="message" style="left: 180px; top: -100px; opacity: 0;">
       <div class="message-content">
         ${msg}
@@ -14,21 +14,22 @@ export function message(msg, color, isWin) {
     $message.css("opacity", "1");
     if (color)
       $message.css("color", `${color}`);
-    if (isWin)
+    if (stay)
       $messageWin = $message;
   }, 0);
   setTimeout(function () {
-    if (!isWin) {
+    if (!stay) {
       $message.css("top", "-100px");
       $message.css("opacity", "0");
 
     }
   }, 2000);
   setTimeout(function () {
-    if (!isWin)
+    if (!stay)
       $app.remove($message);
   }, 3000);
 }
+
 export function messageRemove() {
   if ($messageWin) {
     setTimeout(function () {
