@@ -13,7 +13,7 @@ var $customForm = $(`
       <div name="hard" class="custom-radio">困难</div>
       <div name="lunatic" class="custom-radio">疯狂</div>
       <div name="extra" class="custom-radio">终极</div>
-      <div name="extra" class="custom-radio custom-radio-fish">鱼</div>
+      <div name="super" class="custom-radio custom-radio-fish">鱼</div>
       <div name="custom" class="custom-radio">自制</div>
     </div>
     <span>行:</span>
