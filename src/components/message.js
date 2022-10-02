@@ -1,7 +1,7 @@
 import './message.scss';
 import $ from 'jquery';
-var $app = $('#app');
-let $messageWin;
+const $app = $('#app');
+let $messageStay;
 export const message = function ({ msg,style,contentStyle,stay = false }){
   const $message = $(`<div class="message" style="${style}">
       <div class="message-content" style="${contentStyle}">
@@ -13,7 +13,7 @@ export const message = function ({ msg,style,contentStyle,stay = false }){
     $message.css("top", "15px");
     $message.css("opacity", "1");
     if (stay)
-      $messageWin = $message;
+      $messageStay = $message;
   }, 0);
   setTimeout(function () {
     if (!stay) {
@@ -23,22 +23,24 @@ export const message = function ({ msg,style,contentStyle,stay = false }){
     }
   }, 2000);
   setTimeout(function () {
-    if (!stay)
-      $app.remove($message);
+    if (!stay){  
+      console.log(1);
+      $message.remove();
+    }    
   }, 3000);
 };
 
 export function messageRemove() {
-  if ($messageWin) {
+  if ($messageStay) {
     setTimeout(function () {
 
-      $messageWin.css("top", "-100px");
-      $messageWin.css("opacity", "0");
+      $messageStay.css("top", "-100px");
+      $messageStay.css("opacity", "0");
 
 
     }, 0);
     setTimeout(function () {
-      $app.remove($messageWin);
+      $messageStay.remove();
     }, 1000);
   }
 }

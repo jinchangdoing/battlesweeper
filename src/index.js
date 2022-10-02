@@ -332,13 +332,9 @@ function gameWin() {
   $(`.block > .block-mask`).each(function (i, d) {
     $(d).css("pointer-events", "none");
   });
+
   message({
-    msg: '过关了！！',
-    style: 'left:30px',
-    stay:1
-  });
-  message({
-    msg: winMessage,
+    msg: '过关了！！'+winMessage,
     stay:1
   });
    
